@@ -1,0 +1,24 @@
+<resources>
+    <string name="app_name">ECE 155 Project</string>
+    <string name="DEFAULT_STRING">DEFAULT STRING</string>
+
+    <string name="graph_title">Line Graph:</string>
+
+    <string name="clear_record_data">Clear Record-High Data</string>
+    <string name="generate_csv">Generate CSV Record for Sensors</string>
+
+    <string name="light_sensor_label">Light Sensor</string>
+    <string name="accelerator_x_label">Accelerator X</string>
+    <string name="accelerator_y_label">Accelerator Y</string>
+    <string name="accelerator_z_label">Accelerator Z</string>
+    <string name="magnet_sensor_x_label">Magnet Sensor X</string>
+    <string name="magnet_sensor_y_label">Magnet Sensor Y</string>
+    <string name="magnet_sensor_z_label">Magnet Sensor Z</string>
+
+    <string name="light_sensor_reading">The Light Sensor Reading is:\n</string>
+    <string name="light_sensor_reading_record">The Record-High Light Sensor Reading is:\n</string>
+    <string name="accelerometer_reading">The Accelerometer Reading is:\n</string>
+    <string name="accelerometer_reading_record">The Record-High Accelerometer Reading is:\n</string>
+    <string name="magnetic_sensor_reading">The Magnetic Sensor Reading is:\n</string>
+    <string name="magnetic_sensor_reading_record">The Record-High Magnetic Sensor Reading is:\n</string>
+</resources>
