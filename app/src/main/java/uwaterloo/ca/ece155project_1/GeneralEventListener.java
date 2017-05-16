@@ -9,7 +9,8 @@ import java.util.Vector;
 
 import ca.uwaterloo.sensortoy.LineGraphView;
 
-public class GeneralEventListener implements SensorEventListener
+public class
+GeneralEventListener implements SensorEventListener
 {
     private LineGraphView output;
     private MainActivity main;
@@ -41,6 +42,7 @@ public class GeneralEventListener implements SensorEventListener
         highestReadingMS = new float[3];
     }
 
+
     public void zeroRecords()
     {
         highestReadingLS = 0.0f;
@@ -63,6 +65,7 @@ public class GeneralEventListener implements SensorEventListener
         accelerometerReadings.add(vec);
     }
 
+    // method is called if a sensor event has been triggered
     public void onSensorChanged(SensorEvent ev)
     {
         if (ev == null)

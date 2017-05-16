@@ -1,5 +1,6 @@
 package uwaterloo.ca.ece155project_1;
 
+import android.graphics.Color;
 import android.hardware.Sensor;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
@@ -23,6 +24,7 @@ public class MainActivity extends AppCompatActivity
     TextView[] debugTextViews;
     Button btn_clear;
     Button btn_generateCSV;
+
 
     SensorManager sensorManager;
     SensorEventListener listener;
@@ -119,26 +121,34 @@ public class MainActivity extends AppCompatActivity
             debugTextViews[i].setGravity(Gravity.CENTER);
             debugTextViews[i].setVisibility(View.VISIBLE);
         }
-        debugTextViews[0].setText(R.string.light_sensor_reading);
+
+        // set the text color for the debugging messages
+        for (int i = 0; i < debugTextViews.length; i++) {
+            debugTextViews[i].setTextColor(Color.BLACK);
+        }
+
+        // output the text for the debugging messages
         debugTextViews[1].setText(R.string.light_sensor_reading_record);
         debugTextViews[2].setText(R.string.accelerometer_reading);
         debugTextViews[3].setText(R.string.accelerometer_reading_record);
         debugTextViews[4].setText(R.string.magnetic_sensor_reading);
         debugTextViews[5].setText(R.string.magnetic_sensor_reading_record);
 
-        //////////
 
         sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
         listener = new GeneralEventListener(lineGraph, this);
 
+        // get the sensors from the Android device
         lightSensor = sensorManager.getDefaultSensor(Sensor.TYPE_LIGHT);
         accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         magneticSensor = sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
 
+        // register the sensors to the sensor listeners
         sensorManager.registerListener(listener, lightSensor, SensorManager.SENSOR_DELAY_NORMAL);
         sensorManager.registerListener(listener, accelerometer, SensorManager.SENSOR_DELAY_NORMAL);
         sensorManager.registerListener(listener, magneticSensor, SensorManager.SENSOR_DELAY_NORMAL);
 
+        // output the record high sensor reading
         btn_clear.setOnClickListener(new View.OnClickListener()
         {
             public void onClick(View v)
