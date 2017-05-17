@@ -25,12 +25,16 @@ public class MainActivity extends AppCompatActivity
     Button btn_clear;
     Button btn_generateCSV;
 
-
     SensorManager sensorManager;
     SensorEventListener listener;
     Sensor lightSensor;
     Sensor accelerometer;
     Sensor magneticSensor;
+
+    // object to reference the class that manages file output to the csv file
+    private CreateCsvFile cFile = new CreateCsvFile();
+    // the file name of the file to output the accelerometer readings to
+    private String fileName = "data.csv";
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -43,7 +47,7 @@ public class MainActivity extends AppCompatActivity
         tv_title = (TextView) findViewById(R.id.tv_title);
         tv_title.setText(R.string.graph_title);
 
-        ///// LINE GRAPH /////
+        //region LINE_GRAPH
         lineGraph = new ca.uwaterloo.sensortoy.LineGraphView
         (
             getApplicationContext(),
@@ -68,8 +72,9 @@ public class MainActivity extends AppCompatActivity
         lineGraph.setScaleX(1.75f);
         lineGraph.setScaleY(1.5f);
         lineGraph.setVisibility(View.VISIBLE);
+        //endregion
 
-        ///// CLEAR BUTTON /////
+        //region CLEAR_BUTTON
         btn_clear = new Button(getApplicationContext());
         btn_clear.setText(R.string.clear_record_data);
         btn_clear.setAllCaps(false);
@@ -82,8 +87,9 @@ public class MainActivity extends AppCompatActivity
         params_btn_clear.setMargins(10, 10, 10, 10);
         btn_clear.setLayoutParams(params_btn_clear);
         btn_clear.setVisibility(View.VISIBLE);
+        //endregion
 
-        ///// CSV BUTTON /////
+        //region CSV_BUTTON
         btn_generateCSV = new Button(getApplicationContext());
         btn_generateCSV.setText(R.string.generate_csv);
         btn_generateCSV.setAllCaps(false);
@@ -96,8 +102,9 @@ public class MainActivity extends AppCompatActivity
         params_btn_generateCSV.setMargins(10, 10, 10, 10);
         btn_generateCSV.setLayoutParams(params_btn_generateCSV);
         btn_generateCSV.setVisibility(View.VISIBLE);
+        //endregion
 
-        ///// DEBUG TEXT VIEWS /////
+        //region DEBUG_TEXTVIEWS
         debugTextViews = new TextView[6];
         RelativeLayout.LayoutParams[] params_debugTextViews = new RelativeLayout.LayoutParams[6];
         for (int i = 0; i < 6; i++)
@@ -133,7 +140,7 @@ public class MainActivity extends AppCompatActivity
         debugTextViews[3].setText(R.string.accelerometer_reading_record);
         debugTextViews[4].setText(R.string.magnetic_sensor_reading);
         debugTextViews[5].setText(R.string.magnetic_sensor_reading_record);
-
+        //endregion
 
         sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
         listener = new GeneralEventListener(lineGraph, this);
@@ -148,7 +155,8 @@ public class MainActivity extends AppCompatActivity
         sensorManager.registerListener(listener, accelerometer, SensorManager.SENSOR_DELAY_NORMAL);
         sensorManager.registerListener(listener, magneticSensor, SensorManager.SENSOR_DELAY_NORMAL);
 
-        // output the record high sensor reading
+        //region BUTTON_EVENT_HANDLERS
+        // clear the record high sensor measurements when the clear button is pressed
         btn_clear.setOnClickListener(new View.OnClickListener()
         {
             public void onClick(View v)
@@ -159,6 +167,16 @@ public class MainActivity extends AppCompatActivity
                 listener.onSensorChanged(null);
             }
         });
+
+        // generate and read into a .csv file the past 100 readings for the accelerometer
+        btn_generateCSV.setOnClickListener(new View.OnClickListener()
+        {
+            public void onClick(View v)
+            {
+                cFile.generateCsvFile(fileName);
+            }
+        });
+        //endregion
     }
 
     public void setTextOfDebugTextViews(float ls, float[] acc, float[] ms, float hls, float[] hacc, float[] hms)
