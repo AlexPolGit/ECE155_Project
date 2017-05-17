@@ -12,8 +12,11 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import java.io.File;
 import java.util.Arrays;
+import java.util.Vector;
 
 public class MainActivity extends AppCompatActivity
 {
@@ -30,6 +33,7 @@ public class MainActivity extends AppCompatActivity
     Sensor lightSensor;
     Sensor accelerometer;
     Sensor magneticSensor;
+    Sensor rotationSensor;
 
     // object to reference the class that manages file output to the csv file
     private CreateCsvFile cFile = new CreateCsvFile();
@@ -42,6 +46,9 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        final Toast toastClear = Toast.makeText(getApplicationContext(), getString(R.string.toast_clear), Toast.LENGTH_LONG);
+        final Toast toastCSV = Toast.makeText(getApplicationContext(), getString(R.string.toast_create_csv), Toast.LENGTH_LONG);
+
         RelativeLayout relativeLayout = (RelativeLayout) findViewById(R.id.scrollLayout);
 
         tv_title = (TextView) findViewById(R.id.tv_title);
@@ -53,13 +60,14 @@ public class MainActivity extends AppCompatActivity
             getApplicationContext(),
             100,
             Arrays.asList(
-                    getString(R.string.light_sensor_label),
+                    //getString(R.string.light_sensor_label),
                     getString(R.string.accelerator_x_label),
                     getString(R.string.accelerator_y_label),
-                    getString(R.string.accelerator_z_label),
-                    getString(R.string.magnet_sensor_x_label),
-                    getString(R.string.magnet_sensor_y_label),
-                    getString(R.string.magnet_sensor_z_label))
+                    getString(R.string.accelerator_z_label)
+                    //getString(R.string.magnet_sensor_x_label),
+                    //getString(R.string.magnet_sensor_y_label),
+                    //getString(R.string.magnet_sensor_z_label)
+                    )
         );
         lineGraph.setId(lineGraph.generateViewId());
         Log.d(debugFilter1, "Generated ID for lineGraph: " + Integer.toString(lineGraph.getId()));
@@ -105,9 +113,10 @@ public class MainActivity extends AppCompatActivity
         //endregion
 
         //region DEBUG_TEXTVIEWS
-        debugTextViews = new TextView[6];
-        RelativeLayout.LayoutParams[] params_debugTextViews = new RelativeLayout.LayoutParams[6];
-        for (int i = 0; i < 6; i++)
+        final int NUMBER_OF_TEXT_VIEWS = 8;
+        debugTextViews = new TextView[NUMBER_OF_TEXT_VIEWS];
+        RelativeLayout.LayoutParams[] params_debugTextViews = new RelativeLayout.LayoutParams[NUMBER_OF_TEXT_VIEWS];
+        for (int i = 0; i < NUMBER_OF_TEXT_VIEWS; i++)
         {
             debugTextViews[i] = new TextView(getApplicationContext());
             debugTextViews[i].setId(debugTextViews[i].generateViewId());
@@ -149,11 +158,13 @@ public class MainActivity extends AppCompatActivity
         lightSensor = sensorManager.getDefaultSensor(Sensor.TYPE_LIGHT);
         accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         magneticSensor = sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
+        rotationSensor = sensorManager.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR);
 
         // register the sensors to the sensor listeners
         sensorManager.registerListener(listener, lightSensor, SensorManager.SENSOR_DELAY_NORMAL);
         sensorManager.registerListener(listener, accelerometer, SensorManager.SENSOR_DELAY_NORMAL);
         sensorManager.registerListener(listener, magneticSensor, SensorManager.SENSOR_DELAY_NORMAL);
+        sensorManager.registerListener(listener, rotationSensor, SensorManager.SENSOR_DELAY_NORMAL);
 
         //region BUTTON_EVENT_HANDLERS
         // clear the record high sensor measurements when the clear button is pressed
@@ -164,7 +175,9 @@ public class MainActivity extends AppCompatActivity
                 debugTextViews[1].setText(getString(R.string.light_sensor_reading_record));
                 debugTextViews[3].setText(getString(R.string.accelerometer_reading_record));
                 debugTextViews[5].setText(getString(R.string.magnetic_sensor_reading_record));
+                debugTextViews[7].setText(getString(R.string.rotation_sensor_reading_record));
                 listener.onSensorChanged(null);
+                toastClear.show();
             }
         });
 
@@ -174,19 +187,22 @@ public class MainActivity extends AppCompatActivity
             public void onClick(View v)
             {
                 cFile.generateCsvFile(fileName);
+                toastCSV.show();
             }
         });
         //endregion
     }
 
-    public void setTextOfDebugTextViews(float ls, float[] acc, float[] ms, float hls, float[] hacc, float[] hms)
+    public void setTextOfDebugTextViews(float ls, float hls, Vector<Float> acc, float[] hacc, Vector<Float> ms, float[] hms, Vector<Float> rv, float[] hrv)
     {
         debugTextViews[0].setText(getString(R.string.light_sensor_reading) + String.valueOf(ls));
         debugTextViews[1].setText(getString(R.string.light_sensor_reading_record) + String.valueOf(hls));
-        debugTextViews[2].setText(getString(R.string.accelerometer_reading) + Arrays.toString(acc));
+        debugTextViews[2].setText(getString(R.string.accelerometer_reading) + acc.toString());
         debugTextViews[3].setText(getString(R.string.accelerometer_reading_record) + Arrays.toString(hacc));
-        debugTextViews[4].setText(getString(R.string.magnetic_sensor_reading) + Arrays.toString(ms));
+        debugTextViews[4].setText(getString(R.string.magnetic_sensor_reading) + ms.toString());
         debugTextViews[5].setText(getString(R.string.magnetic_sensor_reading_record) + Arrays.toString(hms));
+        debugTextViews[6].setText(getString(R.string.rotation_sensor_reading) + rv.toString());
+        debugTextViews[7].setText(getString(R.string.rotation_sensor_reading_record) + Arrays.toString(hrv));
     }
 
     public void clearRecords()

@@ -16,15 +16,16 @@ GeneralEventListener implements SensorEventListener
     private MainActivity main;
 
     private float readingLS;
-    private float[] readingACC;
-    private float[] readingMS;
+    private Vector<Float> readingACC;
+    private Vector<Float> readingMS;
+    private Vector<Float> readingRV;
 
     private LinkedList<Vector<Float>> accelerometerReadings;
-    private Vector<Float> currentAccelerometerReading;
 
     private float highestReadingLS;
     private float[] highestReadingACC;
     private float[] highestReadingMS;
+    private float[] highestReadingRV;
 
     public GeneralEventListener(LineGraphView outputView, MainActivity m)
     {
@@ -32,16 +33,27 @@ GeneralEventListener implements SensorEventListener
         main = m;
 
         accelerometerReadings = new LinkedList<>();
-        currentAccelerometerReading = new Vector<Float>(3);
 
         readingLS = 0.0f;
-        readingACC = new float[3];
-        readingMS = new float[3];
+        readingACC = new Vector<Float>();
+        readingACC.setSize(3);
+        readingMS = new Vector<Float>();
+        readingMS.setSize(3);
+        readingRV = new Vector<Float>();
+        readingRV.setSize(3);
+
+        for (int i = 0; i < 3; i++)
+        {
+            readingACC.setElementAt(0.0f, 0);
+            readingMS.setElementAt(0.0f, 0);
+            readingRV.setElementAt(0.0f, 0);
+        }
+
         highestReadingLS = 0.0f;
         highestReadingACC = new float[3];
         highestReadingMS = new float[3];
+        highestReadingRV = new float[3];
     }
-
 
     public void zeroRecords()
     {
@@ -52,17 +64,20 @@ GeneralEventListener implements SensorEventListener
         highestReadingMS[0] = 0.0f;
         highestReadingMS[1] = 0.0f;
         highestReadingMS[2] = 0.0f;
+        highestReadingRV[0] = 0.0f;
+        highestReadingRV[1] = 0.0f;
+        highestReadingRV[2] = 0.0f;
     }
 
     public void onAccuracyChanged(Sensor s, int i) {}
 
-    private void addToAccelerometerReadings(Vector<Float> vec)
+    private void addToAccelerometerReadings()
     {
         if (accelerometerReadings.size() == 100)
         {
             accelerometerReadings.pop();
         }
-        accelerometerReadings.add(vec);
+        accelerometerReadings.add(readingACC);
     }
 
     // method is called if a sensor event has been triggered
@@ -77,52 +92,70 @@ GeneralEventListener implements SensorEventListener
         if (ev.sensor.getType() == Sensor.TYPE_LIGHT)
         {
             readingLS = ev.values[0];
+
+            if (readingLS > highestReadingLS)
+            {
+                highestReadingLS = readingLS;
+            }
         }
         if (ev.sensor.getType() == Sensor.TYPE_ACCELEROMETER)
         {
-            readingACC[0] = ev.values[0];
-            readingACC[1] = ev.values[1];
-            readingACC[2] = ev.values[2];
+            readingACC.setElementAt(ev.values[0], 0);
+            readingACC.setElementAt(ev.values[1], 1);
+            readingACC.setElementAt(ev.values[2], 2);
+            addToAccelerometerReadings();
 
-            //for (int i = 0; i < 3; i++) currentAccelerometerReading.set(i, ev.values[i]);
-
-            //addToAccelerometerReadings(new Vector<Float>(3));
+            if (get3DVectorAverage(readingACC) > get3ArrayAverage(highestReadingACC))
+            {
+                highestReadingACC[0] = readingACC.get(0);
+                highestReadingACC[1] = readingACC.get(1);
+                highestReadingACC[2] = readingACC.get(2);
+            }
         }
         if (ev.sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD)
         {
-            readingMS[0] = ev.values[0];
-            readingMS[1] = ev.values[1];
-            readingMS[2] = ev.values[2];
-        }
+            readingMS.setElementAt(ev.values[0], 0);
+            readingMS.setElementAt(ev.values[1], 1);
+            readingMS.setElementAt(ev.values[2], 2);
 
-        if (readingLS > highestReadingLS)
-        {
-            highestReadingLS = readingLS;
+            if (get3DVectorAverage(readingMS) > get3ArrayAverage(highestReadingMS))
+            {
+                highestReadingMS[0] = readingMS.get(0);
+                highestReadingMS[1] = readingMS.get(1);
+                highestReadingMS[2] = readingMS.get(2);
+            }
         }
-        if ((readingACC[0] + readingACC[1] + readingACC[2]) / 3 > (highestReadingACC[0] + highestReadingACC[1] + highestReadingACC[2]) / 3)
+        if (ev.sensor.getType() == Sensor.TYPE_ROTATION_VECTOR)
         {
-            highestReadingACC[0] = readingACC[0];
-            highestReadingACC[1] = readingACC[1];
-            highestReadingACC[2] = readingACC[2];
-        }
-        if ((readingMS[0] + readingMS[1] + readingMS[2]) / 3 > (highestReadingMS[0] + highestReadingMS[1] + highestReadingMS[2]) / 3)
-        {
-            highestReadingMS[0] = readingMS[0];
-            highestReadingMS[1] = readingMS[1];
-            highestReadingMS[2] = readingMS[2];
+            readingRV.setElementAt(ev.values[0], 0);
+            readingRV.setElementAt(ev.values[1], 1);
+            readingRV.setElementAt(ev.values[2], 2);
+
+            if (get3DVectorAverage(readingRV) > get3ArrayAverage(highestReadingRV))
+            {
+                highestReadingRV[0] = readingRV.get(0);
+                highestReadingRV[1] = readingRV.get(1);
+                highestReadingRV[2] = readingRV.get(2);
+            }
         }
 
         float[] f = {
-                readingLS,
-                readingACC[0],
-                readingACC[1],
-                readingACC[2],
-                readingMS[0],
-                readingMS[1],
-                readingMS[2]
+                readingACC.get(0),
+                readingACC.get(1),
+                readingACC.get(2)
         };
         output.addPoint(f);
 
-        main.setTextOfDebugTextViews(readingLS, readingACC, readingMS, highestReadingLS, highestReadingACC, highestReadingMS);
+        main.setTextOfDebugTextViews(readingLS, highestReadingLS, readingACC, highestReadingACC, readingMS, highestReadingMS, readingRV, highestReadingRV);
+    }
+
+    private float get3DVectorAverage(Vector<Float> vect)
+    {
+        return (vect.get(0) + vect.get(1) + vect.get(2)) / 3;
+    }
+
+    private float get3ArrayAverage(float[] arr)
+    {
+        return (arr[0] + arr[1] + arr[2]) / 3;
     }
 }
