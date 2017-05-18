@@ -105,7 +105,7 @@ GeneralEventListener implements SensorEventListener
             readingACC.setElementAt(ev.values[2], 2);
             addToAccelerometerReadings();
 
-            if (get3DVectorAverage(readingACC) > get3ArrayAverage(highestReadingACC))
+            if (get3DVectorMagnitude(readingACC) > get3DArrayMagnitude(highestReadingACC))
             {
                 highestReadingACC[0] = readingACC.get(0);
                 highestReadingACC[1] = readingACC.get(1);
@@ -118,7 +118,7 @@ GeneralEventListener implements SensorEventListener
             readingMS.setElementAt(ev.values[1], 1);
             readingMS.setElementAt(ev.values[2], 2);
 
-            if (get3DVectorAverage(readingMS) > get3ArrayAverage(highestReadingMS))
+            if (get3DVectorMagnitude(readingMS) > get3DArrayMagnitude(highestReadingMS))
             {
                 highestReadingMS[0] = readingMS.get(0);
                 highestReadingMS[1] = readingMS.get(1);
@@ -131,7 +131,7 @@ GeneralEventListener implements SensorEventListener
             readingRV.setElementAt(ev.values[1], 1);
             readingRV.setElementAt(ev.values[2], 2);
 
-            if (get3DVectorAverage(readingRV) > get3ArrayAverage(highestReadingRV))
+            if (get3DVectorMagnitude(readingRV) > get3DArrayMagnitude(highestReadingRV))
             {
                 highestReadingRV[0] = readingRV.get(0);
                 highestReadingRV[1] = readingRV.get(1);
@@ -154,8 +154,18 @@ GeneralEventListener implements SensorEventListener
         return (vect.get(0) + vect.get(1) + vect.get(2)) / 3;
     }
 
+    private double get3DVectorMagnitude(Vector<Float> vect)
+    {
+        return Math.sqrt(Math.pow(vect.get(0), 2) + Math.pow(vect.get(1), 2) + Math.pow(vect.get(2), 2));
+    }
+
     private float get3ArrayAverage(float[] arr)
     {
         return (arr[0] + arr[1] + arr[2]) / 3;
+    }
+
+    private double get3DArrayMagnitude(float[] arr)
+    {
+        return Math.sqrt(Math.pow(arr[0], 2) + Math.pow(arr[1], 2) + Math.pow(arr[2], 2));
     }
 }

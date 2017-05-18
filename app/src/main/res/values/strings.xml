@@ -18,14 +18,14 @@
     <string name="rotation_sensor_y_label">Magnet Sensor Y</string>
     <string name="rotation_sensor_z_label">Magnet Sensor Z</string>
 
-    <string name="light_sensor_reading">The Light Sensor Reading is:\n</string>
-    <string name="light_sensor_reading_record">The Record-High Light Sensor Reading is:\n</string>
-    <string name="accelerometer_reading">The Accelerometer Reading is:\n</string>
-    <string name="accelerometer_reading_record">The Record-High Accelerometer Reading is:\n</string>
-    <string name="magnetic_sensor_reading">The Magnetic Sensor Reading is:\n</string>
-    <string name="magnetic_sensor_reading_record">The Record-High Magnetic Sensor Reading is:\n</string>
-    <string name="rotation_sensor_reading">The Rotation Sensor Reading is:\n</string>
-    <string name="rotation_sensor_reading_record">The Record-High Rotation Sensor Reading is:\n</string>
+    <string name="light_sensor_reading">Light Sensor Reading:\n</string>
+    <string name="light_sensor_reading_record">Record-High Light Sensor Reading:\n</string>
+    <string name="accelerometer_reading">Accelerometer Reading:\n</string>
+    <string name="accelerometer_reading_record">Record-High Accelerometer Reading:\n</string>
+    <string name="magnetic_sensor_reading">Magnetic Sensor Reading:\n</string>
+    <string name="magnetic_sensor_reading_record">Record-High Magnetic Sensor Reading:\n</string>
+    <string name="rotation_sensor_reading">Rotation Sensor Reading:\n</string>
+    <string name="rotation_sensor_reading_record">Record-High Rotation Sensor Reading:\n</string>
 
     <string name="toast_clear">Cleared Record Data</string>
     <string name="toast_create_csv">CSV File Created</string>

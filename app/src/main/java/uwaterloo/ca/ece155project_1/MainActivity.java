@@ -1,11 +1,16 @@
 package uwaterloo.ca.ece155project_1;
 
+import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.hardware.Sensor;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.net.Uri;
+import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Html;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
@@ -15,6 +20,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Vector;
 
@@ -38,7 +45,7 @@ public class MainActivity extends AppCompatActivity
     // object to reference the class that manages file output to the csv file
     private CreateCsvFile cFile = new CreateCsvFile();
     // the file name of the file to output the accelerometer readings to
-    private String fileName = "data.csv";
+    private String fileName = "generated.txt";
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -186,8 +193,27 @@ public class MainActivity extends AppCompatActivity
         {
             public void onClick(View v)
             {
-                cFile.generateCsvFile(fileName);
-                toastCSV.show();
+                File file = new File(getFilesDir(), fileName);
+                try
+                {
+                    if (!file.exists())
+                    {
+                        file.createNewFile();
+                        Log.d(MainActivity.debugFilter1, "Created file '" + file.getName() + "' at " + file.getAbsolutePath());
+                    }
+                    else
+                    {
+                        Log.d(debugFilter1, "File Already Exists! At: " + file.getAbsolutePath());
+                    }
+
+                    cFile.generateCsvFile(file);
+                    toastCSV.show();
+                    //openFolder(file);
+                }
+                catch (IOException ex)
+                {
+                    ex.printStackTrace();
+                }
             }
         });
         //endregion
@@ -195,18 +221,22 @@ public class MainActivity extends AppCompatActivity
 
     public void setTextOfDebugTextViews(float ls, float hls, Vector<Float> acc, float[] hacc, Vector<Float> ms, float[] hms, Vector<Float> rv, float[] hrv)
     {
-        debugTextViews[0].setText(getString(R.string.light_sensor_reading) + String.valueOf(ls));
-        debugTextViews[1].setText(getString(R.string.light_sensor_reading_record) + String.valueOf(hls));
-        debugTextViews[2].setText(getString(R.string.accelerometer_reading) + acc.toString());
-        debugTextViews[3].setText(getString(R.string.accelerometer_reading_record) + Arrays.toString(hacc));
-        debugTextViews[4].setText(getString(R.string.magnetic_sensor_reading) + ms.toString());
-        debugTextViews[5].setText(getString(R.string.magnetic_sensor_reading_record) + Arrays.toString(hms));
-        debugTextViews[6].setText(getString(R.string.rotation_sensor_reading) + rv.toString());
-        debugTextViews[7].setText(getString(R.string.rotation_sensor_reading_record) + Arrays.toString(hrv));
+        debugTextViews[0].setText(getString(R.string.light_sensor_reading) + String.format("%.0f", ls) + " lx");
+        debugTextViews[1].setText(getString(R.string.light_sensor_reading_record) + String.format("%.0f", hls) + " lx");
+        debugTextViews[2].setText(Html.fromHtml(getString(R.string.accelerometer_reading) + String.format("(<font color=#ff0000>%.3f</font>, <font color=#00ff00>%.3f</font>, <font color=#0000ff>%.3f</font>)", acc.elementAt(0), acc.elementAt(1), acc.elementAt(2)) + " m/s²"));
+        debugTextViews[3].setText(Html.fromHtml(getString(R.string.accelerometer_reading_record) + String.format("(<font color=#ff0000>%.3f</font>, <font color=#00ff00>%.3f</font>, <font color=#0000ff>%.3f</font>)", hacc[0], hacc[1], hacc[2]) + " m/s²"));
+        debugTextViews[4].setText(getString(R.string.magnetic_sensor_reading) + String.format("(%.3f, %.3f, %.3f)", ms.elementAt(0), ms.elementAt(1), ms.elementAt(2)) + " μT");
+        debugTextViews[5].setText(getString(R.string.magnetic_sensor_reading_record) + String.format("(%.3f, %.3f, %.3f)", hms[0], hms[1], hms[2]) + " μT");
+        debugTextViews[6].setText(getString(R.string.rotation_sensor_reading) + String.format("(%.3f, %.3f, %.3f)", rv.elementAt(0), rv.elementAt(1), rv.elementAt(2)));
+        debugTextViews[7].setText(getString(R.string.rotation_sensor_reading_record) + String.format("(%.3f, %.3f, %.3f)", hrv[0], hrv[1], hrv[2]));
     }
 
-    public void clearRecords()
+    public void openFolder(File file)
     {
+        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
 
+        Uri uri = Uri.parse(file.getAbsolutePath());
+        intent.setDataAndType(uri, "*/*");
+        startActivity(Intent.createChooser(intent, "Open Folder"));
     }
 }
