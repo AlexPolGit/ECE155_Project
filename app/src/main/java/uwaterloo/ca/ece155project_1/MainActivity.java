@@ -36,16 +36,16 @@ public class MainActivity extends AppCompatActivity
     Button btn_generateCSV;
 
     SensorManager sensorManager;
-    SensorEventListener listener;
+    GeneralEventListener listener;
     Sensor lightSensor;
     Sensor accelerometer;
     Sensor magneticSensor;
     Sensor rotationSensor;
 
     // object to reference the class that manages file output to the csv file
-    private CreateCsvFile cFile = new CreateCsvFile();
+    private CreateCsvFile cFile = new CreateCsvFile(this);
     // the file name of the file to output the accelerometer readings to
-    private String fileName = "generated.txt";
+    private String fileName = "data.csv";
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -193,27 +193,9 @@ public class MainActivity extends AppCompatActivity
         {
             public void onClick(View v)
             {
-                File file = new File(getFilesDir(), fileName);
-                try
-                {
-                    if (!file.exists())
-                    {
-                        file.createNewFile();
-                        Log.d(MainActivity.debugFilter1, "Created file '" + file.getName() + "' at " + file.getAbsolutePath());
-                    }
-                    else
-                    {
-                        Log.d(debugFilter1, "File Already Exists! At: " + file.getAbsolutePath());
-                    }
+            cFile.generateCsvFile(fileName);
+            toastCSV.show();
 
-                    cFile.generateCsvFile(file);
-                    toastCSV.show();
-                    //openFolder(file);
-                }
-                catch (IOException ex)
-                {
-                    ex.printStackTrace();
-                }
             }
         });
         //endregion

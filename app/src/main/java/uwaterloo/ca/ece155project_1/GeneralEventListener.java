@@ -9,8 +9,7 @@ import java.util.Vector;
 
 import ca.uwaterloo.sensortoy.LineGraphView;
 
-public class
-GeneralEventListener implements SensorEventListener
+public class GeneralEventListener implements SensorEventListener
 {
     private LineGraphView output;
     private MainActivity main;
@@ -26,6 +25,10 @@ GeneralEventListener implements SensorEventListener
     private float[] highestReadingACC;
     private float[] highestReadingMS;
     private float[] highestReadingRV;
+
+    public LinkedList<Vector<Float>> getAccelerometerReadings() {
+        return accelerometerReadings;
+    }
 
     public GeneralEventListener(LineGraphView outputView, MainActivity m)
     {
