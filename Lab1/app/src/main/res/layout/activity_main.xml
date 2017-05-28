@@ -21,6 +21,7 @@
                 android:layout_height="750dp"
                 android:orientation="vertical">
 
+                <!-- default text -->
                 <TextView
                     android:id="@+id/tv_title"
                     android:layout_width="match_parent"

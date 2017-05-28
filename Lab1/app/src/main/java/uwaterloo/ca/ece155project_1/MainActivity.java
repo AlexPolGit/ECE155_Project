@@ -35,6 +35,7 @@ public class MainActivity extends AppCompatActivity
     Button btn_clear;
     Button btn_generateCSV;
 
+    // sensor values
     SensorManager sensorManager;
     GeneralEventListener listener;
     Sensor lightSensor;
@@ -53,6 +54,7 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // set the toast text and interaction for the buttons
         final Toast toastClear = Toast.makeText(getApplicationContext(), getString(R.string.toast_clear), Toast.LENGTH_LONG);
         final Toast toastCSV = Toast.makeText(getApplicationContext(), getString(R.string.toast_create_csv), Toast.LENGTH_LONG);
 
@@ -62,23 +64,23 @@ public class MainActivity extends AppCompatActivity
         tv_title.setText(R.string.graph_title);
 
         //region LINE_GRAPH
+        // create a new linegraph using acc values
         lineGraph = new ca.uwaterloo.sensortoy.LineGraphView
         (
             getApplicationContext(),
             100,
             Arrays.asList(
-                    //getString(R.string.light_sensor_label),
                     getString(R.string.accelerator_x_label),
                     getString(R.string.accelerator_y_label),
                     getString(R.string.accelerator_z_label)
-                    //getString(R.string.magnet_sensor_x_label),
-                    //getString(R.string.magnet_sensor_y_label),
-                    //getString(R.string.magnet_sensor_z_label)
                     )
         );
+        // add the line graph to the app view
         lineGraph.setId(lineGraph.generateViewId());
         Log.d(debugFilter1, "Generated ID for lineGraph: " + Integer.toString(lineGraph.getId()));
         relativeLayout.addView(lineGraph);
+
+        // format the linegraph view on the app view
         RelativeLayout.LayoutParams params_lineGraph = (RelativeLayout.LayoutParams) lineGraph.getLayoutParams();
         params_lineGraph.addRule(RelativeLayout.BELOW, R.id.tv_title);
         params_lineGraph.addRule(RelativeLayout.CENTER_HORIZONTAL);
@@ -90,11 +92,14 @@ public class MainActivity extends AppCompatActivity
         //endregion
 
         //region CLEAR_BUTTON
+        // generate the clear record high history data button
         btn_clear = new Button(getApplicationContext());
         btn_clear.setText(R.string.clear_record_data);
         btn_clear.setAllCaps(false);
         btn_clear.setId(btn_clear.generateViewId());
         Log.d(debugFilter1, "Generated ID for btn_clear: " + Integer.toString(btn_clear.getId()));
+
+        // format the clear button view on the app view
         relativeLayout.addView(btn_clear);
         RelativeLayout.LayoutParams params_btn_clear = (RelativeLayout.LayoutParams) btn_clear.getLayoutParams();
         params_btn_clear.addRule(RelativeLayout.BELOW, lineGraph.getId());
@@ -105,11 +110,14 @@ public class MainActivity extends AppCompatActivity
         //endregion
 
         //region CSV_BUTTON
+        // create the 100 acc output to csv button
         btn_generateCSV = new Button(getApplicationContext());
         btn_generateCSV.setText(R.string.generate_csv);
         btn_generateCSV.setAllCaps(false);
         btn_generateCSV.setId(btn_generateCSV.generateViewId());
         Log.d(debugFilter1, "Generated ID for btn_generateCSV: " + Integer.toString(btn_generateCSV.getId()));
+
+        // format the button view on the app view
         relativeLayout.addView(btn_generateCSV);
         RelativeLayout.LayoutParams params_btn_generateCSV = (RelativeLayout.LayoutParams) btn_generateCSV.getLayoutParams();
         params_btn_generateCSV.addRule(RelativeLayout.BELOW, btn_clear.getId());
@@ -120,6 +128,7 @@ public class MainActivity extends AppCompatActivity
         //endregion
 
         //region DEBUG_TEXTVIEWS
+        // format the text outputted to the app view
         final int NUMBER_OF_TEXT_VIEWS = 8;
         debugTextViews = new TextView[NUMBER_OF_TEXT_VIEWS];
         RelativeLayout.LayoutParams[] params_debugTextViews = new RelativeLayout.LayoutParams[NUMBER_OF_TEXT_VIEWS];
@@ -158,6 +167,7 @@ public class MainActivity extends AppCompatActivity
         debugTextViews[5].setText(R.string.magnetic_sensor_reading_record);
         //endregion
 
+        // initialize the sensor listener and managers
         sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
         listener = new GeneralEventListener(lineGraph, this);
 
@@ -201,6 +211,7 @@ public class MainActivity extends AppCompatActivity
         //endregion
     }
 
+    // method that sets the text related to the sensor readings to the app view
     public void setTextOfDebugTextViews(float ls, float hls, Vector<Float> acc, float[] hacc, Vector<Float> ms, float[] hms, Vector<Float> rv, float[] hrv)
     {
         debugTextViews[0].setText(Html.fromHtml(getString(R.string.light_sensor_reading) + String.format("<br> %.0f", ls) + " lx"));
@@ -213,12 +224,13 @@ public class MainActivity extends AppCompatActivity
         debugTextViews[7].setText(Html.fromHtml(getString(R.string.rotation_sensor_reading_record) + String.format("<br>(%.3f, %.3f, %.3f)", hrv[0], hrv[1], hrv[2])));
     }
 
-    public void openFolder(File file)
-    {
-        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
 
-        Uri uri = Uri.parse(file.getAbsolutePath());
-        intent.setDataAndType(uri, "*/*");
-        startActivity(Intent.createChooser(intent, "Open Folder"));
-    }
+//    public void openFolder(File file)
+//    {
+//        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+//
+//        Uri uri = Uri.parse(file.getAbsolutePath());
+//        intent.setDataAndType(uri, "*/*");
+//        startActivity(Intent.createChooser(intent, "Open Folder"));
+//    }
 }
