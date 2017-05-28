@@ -21,7 +21,7 @@
     <string name="rotation_sensor_y_label">Magnet Sensor Y</string>
     <string name="rotation_sensor_z_label">Magnet Sensor Z</string>
 
-<<<<<<< HEAD
+    <!-- Store the text for the sensor reading titles  -->
     <string name="light_sensor_reading"><![CDATA[<b>Light Sensor Reading:\n</b>]]></string>
     <string name="light_sensor_reading_record"><![CDATA[<b><i>Record-High Light Sensor Reading:\n</i></b>]]></string>
     <string name="accelerometer_reading"><![CDATA[<b>Accelerometer Reading:\n</b>]]></string>
@@ -30,17 +30,6 @@
     <string name="magnetic_sensor_reading_record"><![CDATA[<b><i>Record-High Magnetic Sensor Reading:\n</i></b>]]></string>
     <string name="rotation_sensor_reading"><![CDATA[<b>Rotation Sensor Reading:\n</b>]]></string>
     <string name="rotation_sensor_reading_record"><![CDATA[<b><i>Record-High Rotation Sensor Reading:\n</i></b>]]></string>
-=======
-    <!-- Store the text for the sensor reading titles  -->
-    <string name="light_sensor_reading">Light Sensor Reading:\n</string>
-    <string name="light_sensor_reading_record">Record-High Light Sensor Reading:\n</string>
-    <string name="accelerometer_reading">Accelerometer Reading:\n</string>
-    <string name="accelerometer_reading_record">Record-High Accelerometer Reading:\n</string>
-    <string name="magnetic_sensor_reading">Magnetic Sensor Reading:\n</string>
-    <string name="magnetic_sensor_reading_record">Record-High Magnetic Sensor Reading:\n</string>
-    <string name="rotation_sensor_reading">Rotation Sensor Reading:\n</string>
-    <string name="rotation_sensor_reading_record">Record-High Rotation Sensor Reading:\n</string>
->>>>>>> 313bf772d569a77bb60e6e0dc11c282303195e94
 
     <!-- Store the text for toast  -->
     <string name="toast_clear">Cleared Record Data</string>

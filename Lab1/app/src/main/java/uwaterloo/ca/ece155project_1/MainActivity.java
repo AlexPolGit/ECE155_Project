@@ -178,10 +178,10 @@ public class MainActivity extends AppCompatActivity
         rotationSensor = sensorManager.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR);
 
         // register the sensors to the sensor listeners
-        sensorManager.registerListener(listener, lightSensor, SensorManager.SENSOR_DELAY_NORMAL);
-        sensorManager.registerListener(listener, accelerometer, SensorManager.SENSOR_DELAY_NORMAL);
-        sensorManager.registerListener(listener, magneticSensor, SensorManager.SENSOR_DELAY_NORMAL);
-        sensorManager.registerListener(listener, rotationSensor, SensorManager.SENSOR_DELAY_NORMAL);
+        sensorManager.registerListener(listener, lightSensor, SensorManager.SENSOR_DELAY_GAME);
+        sensorManager.registerListener(listener, accelerometer, SensorManager.SENSOR_DELAY_GAME);
+        sensorManager.registerListener(listener, magneticSensor, SensorManager.SENSOR_DELAY_GAME);
+        sensorManager.registerListener(listener, rotationSensor, SensorManager.SENSOR_DELAY_GAME);
 
         //region BUTTON_EVENT_HANDLERS
         // clear the record high sensor measurements when the clear button is pressed
