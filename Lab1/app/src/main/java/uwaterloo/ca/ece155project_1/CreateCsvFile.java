@@ -15,10 +15,12 @@ public class CreateCsvFile
 {
     private MainActivity m;
 
+    // constructor that, when called, sets a reference to the MainActivity
     public CreateCsvFile(MainActivity _m) {
         m = _m;
     }
 
+    // method that outputs the most recent 100 acc readings to a .csv file
     public void generateCsvFile(String fileName)
     {
         File file = new File(m.getExternalFilesDir("Accelerometer Data"), fileName);
@@ -40,9 +42,10 @@ public class CreateCsvFile
             }
 
         }
+        // file could not be opened!
         catch (IOException e)
         {
-            // file could not be opened!
+            Log.d("IOException","CSV file could not be found or opened");
             e.printStackTrace();
         }
         finally

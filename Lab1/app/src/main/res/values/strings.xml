@@ -2,11 +2,14 @@
     <string name="app_name">ECE 155 Project</string>
     <string name="DEFAULT_STRING">DEFAULT STRING</string>
 
+    <!-- Store the text for the line graph title  -->
     <string name="graph_title">Line Graph:</string>
 
+    <!-- Store the text for the buttons -->
     <string name="clear_record_data">Clear Record-High Data</string>
     <string name="generate_csv">Generate CSV Record for Sensors</string>
 
+    <!-- Store the text for the sensor reading titles for the line graph  -->
     <string name="light_sensor_label">Light Sensor</string>
     <string name="accelerator_x_label">Accelerator X</string>
     <string name="accelerator_y_label">Accelerator Y</string>
@@ -18,6 +21,7 @@
     <string name="rotation_sensor_y_label">Magnet Sensor Y</string>
     <string name="rotation_sensor_z_label">Magnet Sensor Z</string>
 
+    <!-- Store the text for the sensor reading titles  -->
     <string name="light_sensor_reading">Light Sensor Reading:\n</string>
     <string name="light_sensor_reading_record">Record-High Light Sensor Reading:\n</string>
     <string name="accelerometer_reading">Accelerometer Reading:\n</string>
@@ -27,6 +31,7 @@
     <string name="rotation_sensor_reading">Rotation Sensor Reading:\n</string>
     <string name="rotation_sensor_reading_record">Record-High Rotation Sensor Reading:\n</string>
 
+    <!-- Store the text for toast  -->
     <string name="toast_clear">Cleared Record Data</string>
     <string name="toast_create_csv">CSV File Created</string>
 </resources>
