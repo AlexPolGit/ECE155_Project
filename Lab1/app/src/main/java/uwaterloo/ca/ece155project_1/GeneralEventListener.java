@@ -41,14 +41,14 @@ public class GeneralEventListener implements SensorEventListener
         output = outputView;
         main = m;
 
-        accelerometerReadings = new LinkedList<Vector<Float>>();
+        accelerometerReadings = new LinkedList<>();
 
         readingLS = 0.0f;
-        readingACC = new Vector<Float>();
+        readingACC = new Vector<>();
         readingACC.setSize(3);
-        readingMS = new Vector<Float>();
+        readingMS = new Vector<>();
         readingMS.setSize(3);
-        readingRV = new Vector<Float>();
+        readingRV = new Vector<>();
         readingRV.setSize(3);
 
         for (int i = 0; i < 3; i++)
@@ -68,15 +68,13 @@ public class GeneralEventListener implements SensorEventListener
     public void zeroRecords()
     {
         highestReadingLS = 0.0f;
-        highestReadingACC[0] = 0.0f;
-        highestReadingACC[1] = 0.0f;
-        highestReadingACC[2] = 0.0f;
-        highestReadingMS[0] = 0.0f;
-        highestReadingMS[1] = 0.0f;
-        highestReadingMS[2] = 0.0f;
-        highestReadingRV[0] = 0.0f;
-        highestReadingRV[1] = 0.0f;
-        highestReadingRV[2] = 0.0f;
+        for (int i = 0; i < 3; i++)
+        {
+            highestReadingACC[i] = 0.0f;
+            highestReadingMS[i] = 0.0f;
+            highestReadingRV[i] = 0.0f;
+        }
+
     }
 
     // detect if the accuracy of the sensor has changed
@@ -101,6 +99,7 @@ public class GeneralEventListener implements SensorEventListener
         {
             zeroRecords();
             output.purge();
+            return;
         }
         // Add new light reading to light sensor value and check if the record high should be changed
         if (ev.sensor.getType() == Sensor.TYPE_LIGHT)

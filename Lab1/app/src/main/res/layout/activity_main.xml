@@ -8,6 +8,7 @@
     android:layout_height="match_parent"
     android:paddingLeft="16dp"
     android:paddingRight="16dp"
+    android:screenOrientation="portrait"
     tools:context="uwaterloo.ca.ece155project_1.MainActivity">
 
         <ScrollView
