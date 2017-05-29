@@ -1,13 +1,8 @@
 package uwaterloo.ca.ece155project_1;
 
-import android.content.Context;
-import android.content.Intent;
 import android.graphics.Color;
 import android.hardware.Sensor;
-import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
-import android.net.Uri;
-import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Html;
@@ -19,9 +14,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.Vector;
 
@@ -205,10 +197,49 @@ public class MainActivity extends AppCompatActivity
             {
             cFile.generateCsvFile(fileName);
             toastCSV.show();
+                Log.d(debugFilter1, "ADDING: " + listener.getAccelerometerReadings().toString());
 
             }
         });
         //endregion
+    }
+
+    @Override
+    protected void onPause()
+    {
+        super.onPause();
+        Log.d(debugFilter1, "APP PAUSED.");
+        sensorManager.unregisterListener(listener);
+    }
+
+    @Override
+    protected void onStop()
+    {
+        super.onStop();
+        Log.d(debugFilter1, "APP STOPPED.");
+        sensorManager.unregisterListener(listener);
+    }
+
+    @Override
+    protected void onResume()
+    {
+        super.onResume();
+        Log.d(debugFilter1, "APP RESUMED.");
+        sensorManager.registerListener(listener, lightSensor, SensorManager.SENSOR_DELAY_GAME);
+        sensorManager.registerListener(listener, accelerometer, SensorManager.SENSOR_DELAY_GAME);
+        sensorManager.registerListener(listener, magneticSensor, SensorManager.SENSOR_DELAY_GAME);
+        sensorManager.registerListener(listener, rotationSensor, SensorManager.SENSOR_DELAY_GAME);
+    }
+
+    @Override
+    protected void onRestart()
+    {
+        super.onRestart();
+        Log.d(debugFilter1, "APP RESTARTED.");
+        sensorManager.registerListener(listener, lightSensor, SensorManager.SENSOR_DELAY_GAME);
+        sensorManager.registerListener(listener, accelerometer, SensorManager.SENSOR_DELAY_GAME);
+        sensorManager.registerListener(listener, magneticSensor, SensorManager.SENSOR_DELAY_GAME);
+        sensorManager.registerListener(listener, rotationSensor, SensorManager.SENSOR_DELAY_GAME);
     }
 
     // method that sets the text related to the sensor readings to the app view

@@ -1,5 +1,6 @@
 package uwaterloo.ca.ece155project_1;
 
+import android.util.DebugUtils;
 import android.util.Log;
 
 import java.io.*;
@@ -34,7 +35,11 @@ public class CreateCsvFile
             LinkedList<Vector<Float>> accelerometerReadings = m.listener.getAccelerometerReadings();
 
             // output the 100 values of the accelerometer reading history to the csv file
+            for(Vector<Float> vector : accelerometerReadings)
             {
+                pw.print(String.format("%.3f", vector.get(0)) + ",");
+                pw.print(String.format("%.3f", vector.get(1)) + ",");
+                pw.println(String.format("%.3f", vector.get(2)));
             }
 
         }

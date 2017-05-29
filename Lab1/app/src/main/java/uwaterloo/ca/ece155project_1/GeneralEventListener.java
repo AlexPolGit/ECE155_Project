@@ -84,9 +84,9 @@ public class GeneralEventListener implements SensorEventListener
     // if however there are more than 100 elements, push the oldest reading out of the queue
     private void addToAccelerometerReadings()
     {
-        if (accelerometerReadings.size() == 100)
+        while (accelerometerReadings.size() >= 100)
         {
-            accelerometerReadings.pop();
+            accelerometerReadings.poll();
         }
         accelerometerReadings.add(readingACC);
     }
