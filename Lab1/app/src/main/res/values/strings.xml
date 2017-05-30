@@ -8,6 +8,7 @@
     <!-- Store the text for the buttons -->
     <string name="clear_record_data">Clear Record-High Data</string>
     <string name="generate_csv">Generate CSV Record for Sensors</string>
+    <string name="open_folder">Show CSV Folder Location</string>
 
     <!-- Store the text for the sensor reading titles for the line graph  -->
     <string name="light_sensor_label">Light Sensor</string>

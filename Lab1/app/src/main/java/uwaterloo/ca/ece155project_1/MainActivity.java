@@ -1,8 +1,10 @@
 package uwaterloo.ca.ece155project_1;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
+import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Html;
@@ -14,6 +16,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.File;
 import java.util.Arrays;
 
 public class MainActivity extends AppCompatActivity
@@ -26,6 +29,7 @@ public class MainActivity extends AppCompatActivity
     TextView[] debugTextViews;
     Button btn_clear;
     Button btn_generateCSV;
+    Button btn_openFolder;
 
     // sensor values
     SensorManager sensorManager;
@@ -38,7 +42,7 @@ public class MainActivity extends AppCompatActivity
     // object to reference the class that manages file output to the csv file
     private CreateCsvFile cFile = new CreateCsvFile(this);
     // the file name of the file to output the accelerometer readings to
-    private String fileName = "data.csv";
+    private String fileName = "accelerometer_data.csv";
 
     // runs on initial creation of app
     @Override
@@ -121,6 +125,25 @@ public class MainActivity extends AppCompatActivity
         btn_generateCSV.setVisibility(View.VISIBLE);
         //endregion
 
+        //region OPEN_FOLDER_BUTTON
+        // create the 100 acc output to csv button
+        btn_openFolder = new Button(getApplicationContext());
+        btn_openFolder.setText(R.string.open_folder);
+        btn_openFolder.setAllCaps(false);
+        btn_openFolder.setId(btn_openFolder.generateViewId());
+        Log.d(debugFilter1, "Generated ID for btn_openFolder: " + Integer.toString(btn_openFolder.getId()));
+
+        // format the button view on the app view
+        relativeLayout.addView(btn_openFolder);
+        RelativeLayout.LayoutParams params_btn_openFolder = (RelativeLayout.LayoutParams) btn_openFolder.getLayoutParams();
+        params_btn_openFolder.addRule(RelativeLayout.BELOW, btn_generateCSV.getId());
+        params_btn_openFolder.addRule(RelativeLayout.CENTER_HORIZONTAL);
+        params_btn_openFolder.setMargins(10, 10, 10, 10);
+        btn_openFolder.setLayoutParams(params_btn_openFolder);
+        btn_openFolder.setVisibility(View.VISIBLE);
+        //endregion
+
+
         //region DEBUG_TEXTVIEWS
         // format the text outputted to the app view
         final int NUMBER_OF_TEXT_VIEWS = 8;
@@ -135,7 +158,7 @@ public class MainActivity extends AppCompatActivity
             params_debugTextViews[i] = (RelativeLayout.LayoutParams) debugTextViews[i].getLayoutParams();
             if (i == 0)
             {
-                params_debugTextViews[i].addRule(RelativeLayout.BELOW, btn_generateCSV.getId());
+                params_debugTextViews[i].addRule(RelativeLayout.BELOW, btn_openFolder.getId());
             }
             else
             {
@@ -201,6 +224,16 @@ public class MainActivity extends AppCompatActivity
             toastCSV.show();
             }
         });
+
+        // open the folder if the .csv file
+        btn_openFolder.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                openFolder();
+            }
+        });
         //endregion
     }
 
@@ -259,13 +292,13 @@ public class MainActivity extends AppCompatActivity
         debugTextViews[7].setText(Html.fromHtml(getString(R.string.rotation_sensor_reading_record) + String.format("<br>(%.3f, %.3f, %.3f)", hrv.getX(), hrv.getY(), hrv.getZ())));
     }
 
-// unused method for opening the location of the folder in which the csv is located
-//    public void openFolder(File file)
-//    {
-//        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-//
-//        Uri uri = Uri.parse(file.getAbsolutePath());
-//        intent.setDataAndType(uri, "*/*");
-//        startActivity(Intent.createChooser(intent, "Open Folder"));
-//    }
+    // opens the folder of the csv file
+    public void openFolder()
+    {
+        Log.d(debugFilter1, "Opening Folder: " + new File(getExternalFilesDir("Accelerometer Data"), fileName).getAbsolutePath());
+
+        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+        intent.setDataAndType(Uri.parse(new File(getExternalFilesDir("Accelerometer Data"), fileName).getAbsolutePath()), "file/*");
+        startActivity(intent);
+    }
 }
