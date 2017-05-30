@@ -18,8 +18,8 @@
     <string name="filtered_accelerator_z_label">Filtered ACC Z</string>
 	
 	<!-- Store the text for the sensor reading titles  -->
-    <string name="accelerometer_reading"><![CDATA[<b>Accelerometer Reading:\n</b>]]></string>
-    <string name="filtered_accelerometer_reading"><![CDATA[<b><i>Filtered Accelerometer Reading:\n</i></b>]]></string>
+    <string name="accelerometer_reading">Accelerometer Reading:</string>
+    <string name="filtered_accelerometer_reading">Filtered Accelerometer Reading:</string>
 
     <!-- Store the text for toast  -->
     <string name="toast_clear">Cleared Record Data</string>

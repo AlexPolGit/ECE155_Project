@@ -21,7 +21,7 @@ import java.util.Arrays;
 
 public class MainActivity extends AppCompatActivity
 {
-	public final static String debugFilter1 = "debug1";
+    public final static String debugFilter1 = "debug1";
     public final int sensorDelay = SensorManager.SENSOR_DELAY_GAME;
 
     ca.uwaterloo.sensortoy.LineGraphView lineGraph;
@@ -61,15 +61,15 @@ public class MainActivity extends AppCompatActivity
         //region LINE_GRAPH
         // create a new linegraph using acc values
         lineGraph = new ca.uwaterloo.sensortoy.LineGraphView
-        (
-            getApplicationContext(),
-            100,
-            Arrays.asList(
-                    getString(R.string.accelerator_x_label),
-                    getString(R.string.accelerator_y_label),
-                    getString(R.string.accelerator_z_label)
-                    )
-        );
+                (
+                        getApplicationContext(),
+                        100,
+                        Arrays.asList(
+                                getString(R.string.accelerator_x_label),
+                                getString(R.string.accelerator_y_label),
+                                getString(R.string.accelerator_z_label)
+                        )
+                );
         // add the line graph to the app view
         lineGraph.setId(lineGraph.generateViewId());
         Log.d(debugFilter1, "Generated ID for lineGraph: " + Integer.toString(lineGraph.getId()));
@@ -87,15 +87,15 @@ public class MainActivity extends AppCompatActivity
 
         // create another line graph for the filtered values
         filteredLineGraph = new ca.uwaterloo.sensortoy.LineGraphView
-        (
-            getApplicationContext(),
-            100,
-            Arrays.asList(
-                    getString(R.string.filtered_accelerator_x_label),
-                    getString(R.string.filtered_accelerator_y_label),
-                    getString(R.string.filtered_accelerator_z_label)
-                    )
-        );
+                (
+                        getApplicationContext(),
+                        100,
+                        Arrays.asList(
+                                getString(R.string.filtered_accelerator_x_label),
+                                getString(R.string.filtered_accelerator_y_label),
+                                getString(R.string.filtered_accelerator_z_label)
+                        )
+                );
         // add the line graph to the app view
         filteredLineGraph.setId(filteredLineGraph.generateViewId());
         Log.d(debugFilter1, "Generated ID for lineGraph: " + Integer.toString(filteredLineGraph.getId()));
@@ -188,8 +188,8 @@ public class MainActivity extends AppCompatActivity
         {
             public void onClick(View v)
             {
-            cFile.generateCsvFile(fileName);
-            toastCSV.show();
+                cFile.generateCsvFile(fileName);
+                toastCSV.show();
             }
         });
         //endregion
@@ -233,7 +233,7 @@ public class MainActivity extends AppCompatActivity
 
     // method that sets the text related to the sensor readings to the app view
     public void setTextOfDebugTextViews(FloatVector3D acc) {
-        text_ACC.setText(Html.fromHtml(getString(R.string.accelerometer_reading) + String.format("<br>(<font color=#ff0000>%.3f</font>, <font color=#008000>%.3f</font>, <font color=#0000ff>%.3f</font>)", acc.getX(), acc.getY(), acc.getZ()) + " m/s²"));
+        text_ACC.setText(Html.fromHtml(getString(R.string.accelerometer_reading) + String.format("<br>(<font color=#ff0000>%.3f</font>, <font color=#008000>%.3f</font>, <font color=#0000ff>%.3f</font>)", acc.getX(), acc.getY(), acc.getZ()) + " m/s2"));
     }
 
     // opens the folder of the csv file
