@@ -4,6 +4,7 @@
 
     <!-- Store the text for the line graph title  -->
     <string name="graph_title">Line Graph:</string>
+    <string name="filtered_graph_title">Filtered Line Graph:</string>
 
     <!-- Store the text for the buttons -->
     <string name="clear_record_data">Clear Record-High Data</string>
@@ -35,4 +36,14 @@
     <!-- Store the text for toast  -->
     <string name="toast_clear">Cleared Record Data</string>
     <string name="toast_create_csv">CSV File Created</string>
+
+    <!-- Store the text for orientations of phone -->
+    <string name="orientation_left">Left</string>
+    <string name="orientation_left_down">Down-Left</string>
+    <string name="orientation_left_up">Up-Left</string>
+    <string name="orientation_right">Right</string>
+    <string name="orientation_right_down">Down-Right</string>
+    <string name="orientation_right_up">Up-Right</string>
+    <string name="orientation_up">Up</string>
+    <string name="orientation_down">Down</string>
 </resources>

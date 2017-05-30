@@ -18,6 +18,7 @@ public class SignalFilter
             else if (toFilter.elementAt(i) instanceof FloatVector3D && toFilter.elementAt(i + 1) != null)
             {
                 //TODO: Apply the filter "properly"
+
                 ((FloatVector3D)newQueue.elementAt(i)).setX((((FloatVector3D)toFilter.elementAt(i)).getX() + ((FloatVector3D)toFilter.elementAt(i + 1)).getX()) / FILTER_CONSTANT);
                 ((FloatVector3D)newQueue.elementAt(i)).setY((((FloatVector3D)toFilter.elementAt(i)).getY() + ((FloatVector3D)toFilter.elementAt(i + 1)).getY()) / FILTER_CONSTANT);
                 ((FloatVector3D)newQueue.elementAt(i)).setZ((((FloatVector3D)toFilter.elementAt(i)).getZ() + ((FloatVector3D)toFilter.elementAt(i + 1)).getZ()) / FILTER_CONSTANT);

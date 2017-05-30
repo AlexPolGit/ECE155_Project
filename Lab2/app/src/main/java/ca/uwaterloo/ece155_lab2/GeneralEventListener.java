@@ -150,6 +150,6 @@ public class GeneralEventListener implements SensorEventListener
         }
 
         // update the sensor readings on the screen
-        main.setTextOfDebugTextViews(readingLS, highestReadingLS, readingACC, highestReadingACC, readingMS, highestReadingMS, readingRV, highestReadingRV);
+        //main.setTextOfDebugTextViews(readingLS, highestReadingLS, readingACC, highestReadingACC, readingMS, highestReadingMS, readingRV, highestReadingRV);
     }
 }
