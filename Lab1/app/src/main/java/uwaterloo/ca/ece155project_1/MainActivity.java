@@ -19,6 +19,7 @@ import java.util.Arrays;
 public class MainActivity extends AppCompatActivity
 {
     public final static String debugFilter1 = "debug1";
+    public final int sensorDelay = SensorManager.SENSOR_DELAY_GAME;
 
     ca.uwaterloo.sensortoy.LineGraphView lineGraph;
     TextView tv_title;
@@ -39,11 +40,13 @@ public class MainActivity extends AppCompatActivity
     // the file name of the file to output the accelerometer readings to
     private String fileName = "data.csv";
 
+    // runs on initial creation of app
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        Log.d(debugFilter1, "APP CREATED.");
 
         // set the toast text and interaction for the buttons
         final Toast toastClear = Toast.makeText(getApplicationContext(), getString(R.string.toast_clear), Toast.LENGTH_LONG);
@@ -169,10 +172,10 @@ public class MainActivity extends AppCompatActivity
         rotationSensor = sensorManager.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR);
 
         // register the sensors to the sensor listeners
-        sensorManager.registerListener(listener, lightSensor, SensorManager.SENSOR_DELAY_GAME);
-        sensorManager.registerListener(listener, accelerometer, SensorManager.SENSOR_DELAY_GAME);
-        sensorManager.registerListener(listener, magneticSensor, SensorManager.SENSOR_DELAY_GAME);
-        sensorManager.registerListener(listener, rotationSensor, SensorManager.SENSOR_DELAY_GAME);
+        sensorManager.registerListener(listener, lightSensor, sensorDelay);
+        sensorManager.registerListener(listener, accelerometer, sensorDelay);
+        sensorManager.registerListener(listener, magneticSensor, sensorDelay);
+        sensorManager.registerListener(listener, rotationSensor, sensorDelay);
 
         //region BUTTON_EVENT_HANDLERS
         // clear the record high sensor measurements when the clear button is pressed
@@ -196,13 +199,12 @@ public class MainActivity extends AppCompatActivity
             {
             cFile.generateCsvFile(fileName);
             toastCSV.show();
-                Log.d(debugFilter1, "ADDING: " + listener.getAccelerometerReadings().toString());
-
             }
         });
         //endregion
     }
 
+    // runs when app is paused, disables the listener (for performance)
     @Override
     protected void onPause()
     {
@@ -211,6 +213,7 @@ public class MainActivity extends AppCompatActivity
         sensorManager.unregisterListener(listener);
     }
 
+    // runs when app is stopped, disables the listener (for performance)
     @Override
     protected void onStop()
     {
@@ -219,26 +222,28 @@ public class MainActivity extends AppCompatActivity
         sensorManager.unregisterListener(listener);
     }
 
+    // runs when app is resumed, re-enables the listener
     @Override
     protected void onResume()
     {
         super.onResume();
         Log.d(debugFilter1, "APP RESUMED.");
-        sensorManager.registerListener(listener, lightSensor, SensorManager.SENSOR_DELAY_GAME);
-        sensorManager.registerListener(listener, accelerometer, SensorManager.SENSOR_DELAY_GAME);
-        sensorManager.registerListener(listener, magneticSensor, SensorManager.SENSOR_DELAY_GAME);
-        sensorManager.registerListener(listener, rotationSensor, SensorManager.SENSOR_DELAY_GAME);
+        sensorManager.registerListener(listener, lightSensor, sensorDelay);
+        sensorManager.registerListener(listener, accelerometer, sensorDelay);
+        sensorManager.registerListener(listener, magneticSensor, sensorDelay);
+        sensorManager.registerListener(listener, rotationSensor, sensorDelay);
     }
 
+    // runs when app is restarted, re-enables the listener
     @Override
     protected void onRestart()
     {
         super.onRestart();
         Log.d(debugFilter1, "APP RESTARTED.");
-        sensorManager.registerListener(listener, lightSensor, SensorManager.SENSOR_DELAY_GAME);
-        sensorManager.registerListener(listener, accelerometer, SensorManager.SENSOR_DELAY_GAME);
-        sensorManager.registerListener(listener, magneticSensor, SensorManager.SENSOR_DELAY_GAME);
-        sensorManager.registerListener(listener, rotationSensor, SensorManager.SENSOR_DELAY_GAME);
+        sensorManager.registerListener(listener, lightSensor, sensorDelay);
+        sensorManager.registerListener(listener, accelerometer, sensorDelay);
+        sensorManager.registerListener(listener, magneticSensor, sensorDelay);
+        sensorManager.registerListener(listener, rotationSensor, sensorDelay);
     }
 
     // method that sets the text related to the sensor readings to the app view
@@ -254,7 +259,7 @@ public class MainActivity extends AppCompatActivity
         debugTextViews[7].setText(Html.fromHtml(getString(R.string.rotation_sensor_reading_record) + String.format("<br>(%.3f, %.3f, %.3f)", hrv.getX(), hrv.getY(), hrv.getZ())));
     }
 
-
+// unused method for opening the location of the folder in which the csv is located
 //    public void openFolder(File file)
 //    {
 //        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);

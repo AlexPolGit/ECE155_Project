@@ -3,6 +3,7 @@ package uwaterloo.ca.ece155project_1;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
+import android.util.Log;
 
 import ca.uwaterloo.sensortoy.LineGraphView;
 
@@ -18,11 +19,15 @@ public class GeneralEventListener implements SensorEventListener
     private FloatVector3D readingACC;
     private FloatVector3D readingMS;
     private FloatVector3D readingRV;
+    private FloatVector3D f;
 
     // list to contain the 100 most recent acc readings
     private FIFOQueue accelerometerReadings;
+
     // get accessor method to return the list of 100 most recent acc sensor readings
-    public FIFOQueue getAccelerometerReadings() {
+    public FIFOQueue getAccelerometerReadings()
+    {
+        Log.d("debug1", "GETTING ACCEL READINGS: " + accelerometerReadings.toString());
         return accelerometerReadings;
     }
 
@@ -65,9 +70,10 @@ public class GeneralEventListener implements SensorEventListener
 
     // everytime an acc sensor is read, add it to the queue of 100 most recent acc readings
     // if however there are more than 100 elements, push the oldest reading out of the queue
-    private void addToAccelerometerReadings()
+    private void addToAccelerometerReadings(float x, float y, float z)
     {
-        accelerometerReadings.push(readingACC);
+        f = new FloatVector3D(x, y, z);
+        accelerometerReadings.push(f);
     }
 
     // method is called if a sensor event has been triggered
@@ -81,7 +87,7 @@ public class GeneralEventListener implements SensorEventListener
             return;
         }
         // Add new light reading to light sensor value and check if the record high should be changed
-        if (ev.sensor.getType() == Sensor.TYPE_LIGHT)
+        else if (ev.sensor.getType() == Sensor.TYPE_LIGHT)
         {
             readingLS = ev.values[0];
 
@@ -91,12 +97,12 @@ public class GeneralEventListener implements SensorEventListener
             }
         }
         // Add new acc reading to the acc sensor value and check if the record high should be changed
-        if (ev.sensor.getType() == Sensor.TYPE_ACCELEROMETER)
+        else if (ev.sensor.getType() == Sensor.TYPE_ACCELEROMETER)
         {
             readingACC.setX(ev.values[0]);
             readingACC.setY(ev.values[1]);
             readingACC.setZ(ev.values[2]);
-            addToAccelerometerReadings();
+            addToAccelerometerReadings(ev.values[0], ev.values[1], ev.values[2]);
 
             if (readingACC.getMagnitude() > highestReadingACC.getMagnitude())
             {
@@ -104,9 +110,18 @@ public class GeneralEventListener implements SensorEventListener
                 highestReadingACC.setY(readingACC.getY());
                 highestReadingACC.setZ(readingACC.getZ());
             }
+
+            // get the acc vector from the newest acc sensor readings
+            float[] f = {
+                    readingACC.getX(),
+                    readingACC.getY(),
+                    readingACC.getZ()
+            };
+            // output each component of the acc vector to the graph on its own individual line
+            output.addPoint(f);
         }
         // Add new MF reading to the MF sensor value and check if the record high should be changed
-        if (ev.sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD)
+        else if (ev.sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD)
         {
             readingMS.setX(ev.values[0]);
             readingMS.setY(ev.values[1]);
@@ -120,7 +135,7 @@ public class GeneralEventListener implements SensorEventListener
             }
         }
         // Add new RT reading to the RT sensor value and check if the record high should be changed
-        if (ev.sensor.getType() == Sensor.TYPE_ROTATION_VECTOR)
+        else if (ev.sensor.getType() == Sensor.TYPE_ROTATION_VECTOR)
         {
             readingRV.setX(ev.values[0]);
             readingRV.setY(ev.values[1]);
@@ -133,15 +148,6 @@ public class GeneralEventListener implements SensorEventListener
                 highestReadingRV.setZ(readingRV.getZ());
             }
         }
-
-        // get the acc vector from the newest acc sensor readings
-        float[] f = {
-                readingACC.getX(),
-                readingACC.getY(),
-                readingACC.getZ()
-        };
-        // output each component of the acc vector to the graph on its own individual line
-        output.addPoint(f);
 
         // update the sensor readings on the screen
         main.setTextOfDebugTextViews(readingLS, highestReadingLS, readingACC, highestReadingACC, readingMS, highestReadingMS, readingRV, highestReadingRV);
