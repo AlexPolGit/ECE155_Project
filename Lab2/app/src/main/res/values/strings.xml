@@ -7,31 +7,19 @@
     <string name="filtered_graph_title">Filtered Line Graph:</string>
 
     <!-- Store the text for the buttons -->
-    <string name="clear_record_data">Clear Record-High Data</string>
     <string name="generate_csv">Generate CSV Record for Sensors</string>
-    <string name="open_folder">Show CSV Folder Location</string>
 
     <!-- Store the text for the sensor reading titles for the line graph  -->
-    <string name="light_sensor_label">Light Sensor</string>
     <string name="accelerator_x_label">Accelerator X</string>
     <string name="accelerator_y_label">Accelerator Y</string>
     <string name="accelerator_z_label">Accelerator Z</string>
-    <string name="magnet_sensor_x_label">Magnet Sensor X</string>
-    <string name="magnet_sensor_y_label">Magnet Sensor Y</string>
-    <string name="magnet_sensor_z_label">Magnet Sensor Z</string>
-    <string name="rotation_sensor_x_label">Magnet Sensor X</string>
-    <string name="rotation_sensor_y_label">Magnet Sensor Y</string>
-    <string name="rotation_sensor_z_label">Magnet Sensor Z</string>
-
-    <!-- Store the text for the sensor reading titles  -->
-    <string name="light_sensor_reading"><![CDATA[<b>Light Sensor Reading:\n</b>]]></string>
-    <string name="light_sensor_reading_record"><![CDATA[<b><i>Record-High Light Sensor Reading:\n</i></b>]]></string>
+    <string name="filtered_accelerator_x_label">Filtered ACC X</string>
+    <string name="filtered_accelerator_y_label">Filtered ACC Y</string>
+    <string name="filtered_accelerator_z_label">Filtered ACC Z</string>
+	
+	<!-- Store the text for the sensor reading titles  -->
     <string name="accelerometer_reading"><![CDATA[<b>Accelerometer Reading:\n</b>]]></string>
-    <string name="accelerometer_reading_record"><![CDATA[<b><i>Record-High Accelerometer Reading:\n</i></b>]]></string>
-    <string name="magnetic_sensor_reading"><![CDATA[<b>Magnetic Sensor Reading:\n</b>]]></string>
-    <string name="magnetic_sensor_reading_record"><![CDATA[<b><i>Record-High Magnetic Sensor Reading:\n</i></b>]]></string>
-    <string name="rotation_sensor_reading"><![CDATA[<b>Rotation Sensor Reading:\n</b>]]></string>
-    <string name="rotation_sensor_reading_record"><![CDATA[<b><i>Record-High Rotation Sensor Reading:\n</i></b>]]></string>
+    <string name="filtered_accelerometer_reading"><![CDATA[<b><i>Filtered Accelerometer Reading:\n</i></b>]]></string>
 
     <!-- Store the text for toast  -->
     <string name="toast_clear">Cleared Record Data</string>

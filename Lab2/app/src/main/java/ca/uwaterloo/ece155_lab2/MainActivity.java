@@ -21,10 +21,11 @@ import java.util.Arrays;
 
 public class MainActivity extends AppCompatActivity
 {
-    public final static String debugFilter1 = "debug1";
+	public final static String debugFilter1 = "debug1";
     public final int sensorDelay = SensorManager.SENSOR_DELAY_GAME;
 
     ca.uwaterloo.sensortoy.LineGraphView lineGraph;
+    ca.uwaterloo.sensortoy.LineGraphView filteredLineGraph;
     TextView tv_title;
     TextView text_ACC;
     TextView text_Direction;
@@ -78,11 +79,37 @@ public class MainActivity extends AppCompatActivity
         RelativeLayout.LayoutParams params_lineGraph = (RelativeLayout.LayoutParams) lineGraph.getLayoutParams();
         params_lineGraph.addRule(RelativeLayout.BELOW, R.id.tv_title);
         params_lineGraph.addRule(RelativeLayout.CENTER_HORIZONTAL);
-        params_lineGraph.setMargins(10, 100, 10, 100);
+        params_lineGraph.setMargins(10, 100, 10, 125);
         lineGraph.setLayoutParams(params_lineGraph);
         lineGraph.setScaleX(1.75f);
         lineGraph.setScaleY(1.5f);
         lineGraph.setVisibility(View.VISIBLE);
+
+        // create another line graph for the filtered values
+        filteredLineGraph = new ca.uwaterloo.sensortoy.LineGraphView
+        (
+            getApplicationContext(),
+            100,
+            Arrays.asList(
+                    getString(R.string.filtered_accelerator_x_label),
+                    getString(R.string.filtered_accelerator_y_label),
+                    getString(R.string.filtered_accelerator_z_label)
+                    )
+        );
+        // add the line graph to the app view
+        filteredLineGraph.setId(filteredLineGraph.generateViewId());
+        Log.d(debugFilter1, "Generated ID for lineGraph: " + Integer.toString(filteredLineGraph.getId()));
+        relativeLayout.addView(filteredLineGraph);
+
+        // format the linegraph view on the app view
+        RelativeLayout.LayoutParams params_filteredLineGraph = (RelativeLayout.LayoutParams) filteredLineGraph.getLayoutParams();
+        params_filteredLineGraph.addRule(RelativeLayout.BELOW, lineGraph.getId());
+        params_filteredLineGraph.addRule(RelativeLayout.CENTER_HORIZONTAL);
+        params_filteredLineGraph.setMargins(10, 100, 10, 100);
+        filteredLineGraph.setLayoutParams(params_filteredLineGraph);
+        filteredLineGraph.setScaleX(1.75f);
+        filteredLineGraph.setScaleY(1.5f);
+        filteredLineGraph.setVisibility(View.VISIBLE);
         //endregion
 
         //region CSV_BUTTON
@@ -96,7 +123,7 @@ public class MainActivity extends AppCompatActivity
         // format the button view on the app view
         relativeLayout.addView(btn_generateCSV);
         RelativeLayout.LayoutParams params_btn_generateCSV = (RelativeLayout.LayoutParams) btn_generateCSV.getLayoutParams();
-        params_btn_generateCSV.addRule(RelativeLayout.BELOW, lineGraph.getId());
+        params_btn_generateCSV.addRule(RelativeLayout.BELOW, filteredLineGraph.getId());
         params_btn_generateCSV.addRule(RelativeLayout.CENTER_HORIZONTAL);
         params_btn_generateCSV.setMargins(10, 10, 10, 10);
         btn_generateCSV.setLayoutParams(params_btn_generateCSV);
@@ -124,7 +151,7 @@ public class MainActivity extends AppCompatActivity
         params_ACC.addRule(RelativeLayout.CENTER_HORIZONTAL);
         params_direction.addRule(RelativeLayout.CENTER_HORIZONTAL);
 
-        params_ACC.setMargins(10, 10, 10, 10);
+        params_ACC.setMargins(10, 10, 10, 30);
         params_direction.setMargins(10, 10, 10, 10);
 
         text_ACC.setLayoutParams(params_ACC);
@@ -142,6 +169,7 @@ public class MainActivity extends AppCompatActivity
         // output the text for the debugging messages
         text_ACC.setText(R.string.accelerometer_reading);
         text_Direction.setText("left");
+        text_Direction.setTextSize(80.0f);
         //endregion
 
         // initialize the sensor listener and managers
@@ -205,7 +233,7 @@ public class MainActivity extends AppCompatActivity
 
     // method that sets the text related to the sensor readings to the app view
     public void setTextOfDebugTextViews(FloatVector3D acc) {
-        text_ACC.setText(Html.fromHtml(getString(R.string.accelerometer_reading) + String.format("<br>(<font color=#ff0000>%.3f</font>, <font color=#008000>%.3f</font>, <font color=#0000ff>%.3f</font>)", acc.getX(), acc.getY(), acc.getZ()) + " m/sÂ²"));
+        text_ACC.setText(Html.fromHtml(getString(R.string.accelerometer_reading) + String.format("<br>(<font color=#ff0000>%.3f</font>, <font color=#008000>%.3f</font>, <font color=#0000ff>%.3f</font>)", acc.getX(), acc.getY(), acc.getZ()) + " m/s²"));
     }
 
     // opens the folder of the csv file
