@@ -26,18 +26,14 @@ public class MainActivity extends AppCompatActivity
 
     ca.uwaterloo.sensortoy.LineGraphView lineGraph;
     TextView tv_title;
-    TextView[] debugTextViews;
-    Button btn_clear;
+    TextView text_ACC;
+    TextView text_Direction;
     Button btn_generateCSV;
-    Button btn_openFolder;
 
     // sensor values
     SensorManager sensorManager;
     GeneralEventListener listener;
-    Sensor lightSensor;
     Sensor accelerometer;
-    Sensor magneticSensor;
-    Sensor rotationSensor;
 
     // object to reference the class that manages file output to the csv file
     private CreateCsvFile cFile = new CreateCsvFile(this);
@@ -89,24 +85,6 @@ public class MainActivity extends AppCompatActivity
         lineGraph.setVisibility(View.VISIBLE);
         //endregion
 
-        //region CLEAR_BUTTON
-        // generate the clear record high history data button
-        btn_clear = new Button(getApplicationContext());
-        btn_clear.setText(R.string.clear_record_data);
-        btn_clear.setAllCaps(false);
-        btn_clear.setId(btn_clear.generateViewId());
-        Log.d(debugFilter1, "Generated ID for btn_clear: " + Integer.toString(btn_clear.getId()));
-
-        // format the clear button view on the app view
-        relativeLayout.addView(btn_clear);
-        RelativeLayout.LayoutParams params_btn_clear = (RelativeLayout.LayoutParams) btn_clear.getLayoutParams();
-        params_btn_clear.addRule(RelativeLayout.BELOW, lineGraph.getId());
-        params_btn_clear.addRule(RelativeLayout.CENTER_HORIZONTAL);
-        params_btn_clear.setMargins(10, 10, 10, 10);
-        btn_clear.setLayoutParams(params_btn_clear);
-        btn_clear.setVisibility(View.VISIBLE);
-        //endregion
-
         //region CSV_BUTTON
         // create the 100 acc output to csv button
         btn_generateCSV = new Button(getApplicationContext());
@@ -118,70 +96,52 @@ public class MainActivity extends AppCompatActivity
         // format the button view on the app view
         relativeLayout.addView(btn_generateCSV);
         RelativeLayout.LayoutParams params_btn_generateCSV = (RelativeLayout.LayoutParams) btn_generateCSV.getLayoutParams();
-        params_btn_generateCSV.addRule(RelativeLayout.BELOW, btn_clear.getId());
+        params_btn_generateCSV.addRule(RelativeLayout.BELOW, lineGraph.getId());
         params_btn_generateCSV.addRule(RelativeLayout.CENTER_HORIZONTAL);
         params_btn_generateCSV.setMargins(10, 10, 10, 10);
         btn_generateCSV.setLayoutParams(params_btn_generateCSV);
         btn_generateCSV.setVisibility(View.VISIBLE);
         //endregion
 
-        //region OPEN_FOLDER_BUTTON
-        // create the 100 acc output to csv button
-        btn_openFolder = new Button(getApplicationContext());
-        btn_openFolder.setText(R.string.open_folder);
-        btn_openFolder.setAllCaps(false);
-        btn_openFolder.setId(btn_openFolder.generateViewId());
-        Log.d(debugFilter1, "Generated ID for btn_openFolder: " + Integer.toString(btn_openFolder.getId()));
-
-        // format the button view on the app view
-        relativeLayout.addView(btn_openFolder);
-        RelativeLayout.LayoutParams params_btn_openFolder = (RelativeLayout.LayoutParams) btn_openFolder.getLayoutParams();
-        params_btn_openFolder.addRule(RelativeLayout.BELOW, btn_generateCSV.getId());
-        params_btn_openFolder.addRule(RelativeLayout.CENTER_HORIZONTAL);
-        params_btn_openFolder.setMargins(10, 10, 10, 10);
-        btn_openFolder.setLayoutParams(params_btn_openFolder);
-        btn_openFolder.setVisibility(View.VISIBLE);
-        //endregion
-
-
         //region DEBUG_TEXTVIEWS
         // format the text outputted to the app view
-        final int NUMBER_OF_TEXT_VIEWS = 8;
-        debugTextViews = new TextView[NUMBER_OF_TEXT_VIEWS];
-        RelativeLayout.LayoutParams[] params_debugTextViews = new RelativeLayout.LayoutParams[NUMBER_OF_TEXT_VIEWS];
-        for (int i = 0; i < NUMBER_OF_TEXT_VIEWS; i++)
-        {
-            debugTextViews[i] = new TextView(getApplicationContext());
-            debugTextViews[i].setId(debugTextViews[i].generateViewId());
-            Log.d(debugFilter1, "Generated ID for debugTextViews " + i + ": " + Integer.toString(debugTextViews[i].getId()));
-            relativeLayout.addView(debugTextViews[i]);
-            params_debugTextViews[i] = (RelativeLayout.LayoutParams) debugTextViews[i].getLayoutParams();
-            if (i == 0)
-            {
-                params_debugTextViews[i].addRule(RelativeLayout.BELOW, btn_openFolder.getId());
-            }
-            else
-            {
-                params_debugTextViews[i].addRule(RelativeLayout.BELOW, debugTextViews[i - 1].getId());
-            }
-            params_debugTextViews[i].addRule(RelativeLayout.CENTER_HORIZONTAL);
-            params_debugTextViews[i].setMargins(10, 10, 10, 10);
-            debugTextViews[i].setLayoutParams(params_debugTextViews[i]);
-            debugTextViews[i].setGravity(Gravity.CENTER);
-            debugTextViews[i].setVisibility(View.VISIBLE);
-        }
+        text_ACC = new TextView(getApplicationContext());
+        text_Direction = new TextView(getApplicationContext());
+        text_ACC.setId(text_ACC.generateViewId());
+        text_Direction.setId(text_Direction.generateViewId());
+        Log.d(debugFilter1, "Generated ID for accelerometer: " + Integer.toString(text_ACC.getId()));
+        Log.d(debugFilter1, "Generated ID for direction: " + Integer.toString(text_Direction.getId()));
 
-        // set the text color for the debugging messages
-        for (int i = 0; i < debugTextViews.length; i++) {
-            debugTextViews[i].setTextColor(Color.BLACK);
-        }
+        relativeLayout.addView(text_ACC);
+        relativeLayout.addView(text_Direction);
+
+        RelativeLayout.LayoutParams params_ACC = (RelativeLayout.LayoutParams) text_ACC.getLayoutParams();
+        RelativeLayout.LayoutParams params_direction = (RelativeLayout.LayoutParams) text_Direction.getLayoutParams();
+
+        params_ACC.addRule(relativeLayout.BELOW, btn_generateCSV.getId());
+        params_direction.addRule(relativeLayout.BELOW, text_ACC.getId());
+
+        params_ACC.addRule(RelativeLayout.CENTER_HORIZONTAL);
+        params_direction.addRule(RelativeLayout.CENTER_HORIZONTAL);
+
+        params_ACC.setMargins(10, 10, 10, 10);
+        params_direction.setMargins(10, 10, 10, 10);
+
+        text_ACC.setLayoutParams(params_ACC);
+        text_Direction.setLayoutParams(params_direction);
+
+        text_ACC.setGravity(Gravity.CENTER);
+        text_Direction.setGravity(Gravity.CENTER);
+
+        text_ACC.setVisibility(View.VISIBLE);
+        text_Direction.setVisibility(View.VISIBLE);
+
+        text_ACC.setTextColor(Color.BLACK);
+        text_Direction.setTextColor(Color.BLACK);
 
         // output the text for the debugging messages
-        debugTextViews[1].setText(R.string.light_sensor_reading_record);
-        debugTextViews[2].setText(R.string.accelerometer_reading);
-        debugTextViews[3].setText(R.string.accelerometer_reading_record);
-        debugTextViews[4].setText(R.string.magnetic_sensor_reading);
-        debugTextViews[5].setText(R.string.magnetic_sensor_reading_record);
+        text_ACC.setText(R.string.accelerometer_reading);
+        text_Direction.setText("left");
         //endregion
 
         // initialize the sensor listener and managers
@@ -189,32 +149,12 @@ public class MainActivity extends AppCompatActivity
         listener = new GeneralEventListener(lineGraph, this);
 
         // get the sensors from the Android device
-        lightSensor = sensorManager.getDefaultSensor(Sensor.TYPE_LIGHT);
         accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-        magneticSensor = sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
-        rotationSensor = sensorManager.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR);
 
         // register the sensors to the sensor listeners
-        sensorManager.registerListener(listener, lightSensor, sensorDelay);
         sensorManager.registerListener(listener, accelerometer, sensorDelay);
-        sensorManager.registerListener(listener, magneticSensor, sensorDelay);
-        sensorManager.registerListener(listener, rotationSensor, sensorDelay);
 
         //region BUTTON_EVENT_HANDLERS
-        // clear the record high sensor measurements when the clear button is pressed
-        btn_clear.setOnClickListener(new View.OnClickListener()
-        {
-            public void onClick(View v)
-            {
-                debugTextViews[1].setText(getString(R.string.light_sensor_reading_record));
-                debugTextViews[3].setText(getString(R.string.accelerometer_reading_record));
-                debugTextViews[5].setText(getString(R.string.magnetic_sensor_reading_record));
-                debugTextViews[7].setText(getString(R.string.rotation_sensor_reading_record));
-                listener.onSensorChanged(null);
-                toastClear.show();
-            }
-        });
-
         // generate and read into a .csv file the past 100 readings for the accelerometer
         btn_generateCSV.setOnClickListener(new View.OnClickListener()
         {
@@ -222,16 +162,6 @@ public class MainActivity extends AppCompatActivity
             {
             cFile.generateCsvFile(fileName);
             toastCSV.show();
-            }
-        });
-
-        // open the folder if the .csv file
-        btn_openFolder.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                openFolder();
             }
         });
         //endregion
@@ -261,10 +191,7 @@ public class MainActivity extends AppCompatActivity
     {
         super.onResume();
         Log.d(debugFilter1, "APP RESUMED.");
-        sensorManager.registerListener(listener, lightSensor, sensorDelay);
         sensorManager.registerListener(listener, accelerometer, sensorDelay);
-        sensorManager.registerListener(listener, magneticSensor, sensorDelay);
-        sensorManager.registerListener(listener, rotationSensor, sensorDelay);
     }
 
     // runs when app is restarted, re-enables the listener
@@ -273,23 +200,12 @@ public class MainActivity extends AppCompatActivity
     {
         super.onRestart();
         Log.d(debugFilter1, "APP RESTARTED.");
-        sensorManager.registerListener(listener, lightSensor, sensorDelay);
         sensorManager.registerListener(listener, accelerometer, sensorDelay);
-        sensorManager.registerListener(listener, magneticSensor, sensorDelay);
-        sensorManager.registerListener(listener, rotationSensor, sensorDelay);
     }
 
     // method that sets the text related to the sensor readings to the app view
-    public void setTextOfDebugTextViews(float ls, float hls, FloatVector3D acc, FloatVector3D hacc, FloatVector3D ms, FloatVector3D hms, FloatVector3D rv, FloatVector3D hrv)
-    {
-        debugTextViews[0].setText(Html.fromHtml(getString(R.string.light_sensor_reading) + String.format("<br> %.0f", ls) + " lx"));
-        debugTextViews[1].setText(Html.fromHtml(getString(R.string.light_sensor_reading_record) + String.format("<br> %.0f", hls) + " lx"));
-        debugTextViews[2].setText(Html.fromHtml(getString(R.string.accelerometer_reading) + String.format("<br>(<font color=#ff0000>%.3f</font>, <font color=#008000>%.3f</font>, <font color=#0000ff>%.3f</font>)", acc.getX(), acc.getY(), acc.getZ()) + " m/s²"));
-        debugTextViews[3].setText(Html.fromHtml(getString(R.string.accelerometer_reading_record) + String.format("<br>(<font color=#ff0000>%.3f</font>, <font color=#008000>%.3f</font>, <font color=#0000ff>%.3f</font>)", hacc.getX(), hacc.getY(), hacc.getZ()) + " m/s²"));
-        debugTextViews[4].setText(Html.fromHtml(getString(R.string.magnetic_sensor_reading) + String.format("<br>(%.3f, %.3f, %.3f)", ms.getX(), ms.getY(), ms.getZ()) + " μT"));
-        debugTextViews[5].setText(Html.fromHtml(getString(R.string.magnetic_sensor_reading_record) + String.format("<br>(%.3f, %.3f, %.3f)", hms.getX(), hms.getY(), hms.getZ()) + " μT"));
-        debugTextViews[6].setText(Html.fromHtml(getString(R.string.rotation_sensor_reading) + String.format("<br>(%.3f, %.3f, %.3f)", rv.getX(), rv.getY(), rv.getZ())));
-        debugTextViews[7].setText(Html.fromHtml(getString(R.string.rotation_sensor_reading_record) + String.format("<br>(%.3f, %.3f, %.3f)", hrv.getX(), hrv.getY(), hrv.getZ())));
+    public void setTextOfDebugTextViews(FloatVector3D acc) {
+        text_ACC.setText(Html.fromHtml(getString(R.string.accelerometer_reading) + String.format("<br>(<font color=#ff0000>%.3f</font>, <font color=#008000>%.3f</font>, <font color=#0000ff>%.3f</font>)", acc.getX(), acc.getY(), acc.getZ()) + " m/s²"));
     }
 
     // opens the folder of the csv file
