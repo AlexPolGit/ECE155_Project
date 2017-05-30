@@ -5,3 +5,4 @@
 * Implements basic sensor readings and display results on a debugging app
 
 ## Lab 2
+* Uses filtered accelerometer readings to determine orientation of phone
