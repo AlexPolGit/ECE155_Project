@@ -15,7 +15,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.Arrays;
-import java.util.Vector;
 
 public class MainActivity extends AppCompatActivity
 {
@@ -243,16 +242,16 @@ public class MainActivity extends AppCompatActivity
     }
 
     // method that sets the text related to the sensor readings to the app view
-    public void setTextOfDebugTextViews(float ls, float hls, Vector<Float> acc, float[] hacc, Vector<Float> ms, float[] hms, Vector<Float> rv, float[] hrv)
+    public void setTextOfDebugTextViews(float ls, float hls, FloatVector3D acc, FloatVector3D hacc, FloatVector3D ms, FloatVector3D hms, FloatVector3D rv, FloatVector3D hrv)
     {
         debugTextViews[0].setText(Html.fromHtml(getString(R.string.light_sensor_reading) + String.format("<br> %.0f", ls) + " lx"));
         debugTextViews[1].setText(Html.fromHtml(getString(R.string.light_sensor_reading_record) + String.format("<br> %.0f", hls) + " lx"));
-        debugTextViews[2].setText(Html.fromHtml(getString(R.string.accelerometer_reading) + String.format("<br>(<font color=#ff0000>%.3f</font>, <font color=#008000>%.3f</font>, <font color=#0000ff>%.3f</font>)", acc.elementAt(0), acc.elementAt(1), acc.elementAt(2)) + " m/s²"));
-        debugTextViews[3].setText(Html.fromHtml(getString(R.string.accelerometer_reading_record) + String.format("<br>(<font color=#ff0000>%.3f</font>, <font color=#008000>%.3f</font>, <font color=#0000ff>%.3f</font>)", hacc[0], hacc[1], hacc[2]) + " m/s²"));
-        debugTextViews[4].setText(Html.fromHtml(getString(R.string.magnetic_sensor_reading) + String.format("<br>(%.3f, %.3f, %.3f)", ms.elementAt(0), ms.elementAt(1), ms.elementAt(2)) + " μT"));
-        debugTextViews[5].setText(Html.fromHtml(getString(R.string.magnetic_sensor_reading_record) + String.format("<br>(%.3f, %.3f, %.3f)", hms[0], hms[1], hms[2]) + " μT"));
-        debugTextViews[6].setText(Html.fromHtml(getString(R.string.rotation_sensor_reading) + String.format("<br>(%.3f, %.3f, %.3f)", rv.elementAt(0), rv.elementAt(1), rv.elementAt(2))));
-        debugTextViews[7].setText(Html.fromHtml(getString(R.string.rotation_sensor_reading_record) + String.format("<br>(%.3f, %.3f, %.3f)", hrv[0], hrv[1], hrv[2])));
+        debugTextViews[2].setText(Html.fromHtml(getString(R.string.accelerometer_reading) + String.format("<br>(<font color=#ff0000>%.3f</font>, <font color=#008000>%.3f</font>, <font color=#0000ff>%.3f</font>)", acc.getX(), acc.getY(), acc.getZ()) + " m/s²"));
+        debugTextViews[3].setText(Html.fromHtml(getString(R.string.accelerometer_reading_record) + String.format("<br>(<font color=#ff0000>%.3f</font>, <font color=#008000>%.3f</font>, <font color=#0000ff>%.3f</font>)", hacc.getX(), hacc.getY(), hacc.getZ()) + " m/s²"));
+        debugTextViews[4].setText(Html.fromHtml(getString(R.string.magnetic_sensor_reading) + String.format("<br>(%.3f, %.3f, %.3f)", ms.getX(), ms.getY(), ms.getZ()) + " μT"));
+        debugTextViews[5].setText(Html.fromHtml(getString(R.string.magnetic_sensor_reading_record) + String.format("<br>(%.3f, %.3f, %.3f)", hms.getX(), hms.getY(), hms.getZ()) + " μT"));
+        debugTextViews[6].setText(Html.fromHtml(getString(R.string.rotation_sensor_reading) + String.format("<br>(%.3f, %.3f, %.3f)", rv.getX(), rv.getY(), rv.getZ())));
+        debugTextViews[7].setText(Html.fromHtml(getString(R.string.rotation_sensor_reading_record) + String.format("<br>(%.3f, %.3f, %.3f)", hrv.getX(), hrv.getY(), hrv.getZ())));
     }
 
 

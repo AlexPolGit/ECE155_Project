@@ -6,9 +6,6 @@ import android.util.Log;
 import java.io.*;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.LinkedList;
-import java.util.Vector;
-import java.lang.Float;
 
 // class that manages the accelerometer data output into a .csv file
 public class CreateCsvFile
@@ -32,14 +29,14 @@ public class CreateCsvFile
             writer = new FileWriter(file);
             pw = new PrintWriter(writer);
             // get the accelerometer reading history
-            LinkedList<Vector<Float>> accelerometerReadings = m.listener.getAccelerometerReadings();
+            FIFOQueue accelerometerReadings = m.listener.getAccelerometerReadings();
 
             // output the 100 values of the accelerometer reading history to the csv file
-            for(Vector<Float> vector : accelerometerReadings)
+            for (int i = 0; i < 100; i++)
             {
-                pw.print(String.format("%.3f", vector.get(0)) + ",");
-                pw.print(String.format("%.3f", vector.get(1)) + ",");
-                pw.println(String.format("%.3f", vector.get(2)));
+                pw.print(String.format("%.3f", ((FloatVector3D)accelerometerReadings.elementAt(i)).getX()) + ",");
+                pw.print(String.format("%.3f", ((FloatVector3D)accelerometerReadings.elementAt(i)).getY()) + ",");
+                pw.println(String.format("%.3f", ((FloatVector3D)accelerometerReadings.elementAt(i)).getZ()));
             }
 
         }
