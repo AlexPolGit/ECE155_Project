@@ -32,6 +32,7 @@
                     android:layout_marginTop="10dp"
                     android:text="@string/DEFAULT_STRING"
                     android:textAlignment="center"
+                    android:textColor="@color/black"
                     android:textSize="30sp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintLeft_toLeftOf="parent"
@@ -40,5 +41,4 @@
 
             </RelativeLayout>
         </ScrollView>
-
 </RelativeLayout>

@@ -29,13 +29,19 @@ public class CreateCsvFile
             pw = new PrintWriter(writer);
             // get the accelerometer reading history
             FIFOQueue accelerometerReadings = m.listener.getAccelerometerReadings();
+            FIFOQueue filteredAccelerometerReadings = m.listener.getAccelerometerReadingsFiltered();
 
             // output the 100 values of the accelerometer reading history to the csv file
+            pw.println("Unfiltered:, , , , Filtered:");
             for (int i = 0; i < 100; i++)
             {
                 pw.print(String.format("%.3f", ((FloatVector3D)accelerometerReadings.elementAt(i)).getX()) + ",");
                 pw.print(String.format("%.3f", ((FloatVector3D)accelerometerReadings.elementAt(i)).getY()) + ",");
-                pw.println(String.format("%.3f", ((FloatVector3D)accelerometerReadings.elementAt(i)).getZ()));
+                pw.print(String.format("%.3f", ((FloatVector3D)accelerometerReadings.elementAt(i)).getZ()) + ", ,");
+
+                pw.print(String.format("%.3f", ((FloatVector3D)filteredAccelerometerReadings.elementAt(i)).getX()) + ",");
+                pw.print(String.format("%.3f", ((FloatVector3D)filteredAccelerometerReadings.elementAt(i)).getY()) + ",");
+                pw.println(String.format("%.3f", ((FloatVector3D)filteredAccelerometerReadings.elementAt(i)).getZ()));
             }
 
         }

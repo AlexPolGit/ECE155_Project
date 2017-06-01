@@ -1,5 +1,8 @@
 package ca.uwaterloo.ece155_lab2;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class FIFOQueue
 {
     int size = 1;
@@ -73,6 +76,16 @@ public class FIFOQueue
     public Object elementAt(int index)
     {
         return queue[index];
+    }
+
+    public List<FloatVector3D> toList()
+    {
+        List<FloatVector3D> list = new ArrayList<>();
+        for (int i = 0; i < size; i++)
+        {
+            list.add((FloatVector3D)queue[i]);
+        }
+        return list;
     }
 
     // custom toString() method
