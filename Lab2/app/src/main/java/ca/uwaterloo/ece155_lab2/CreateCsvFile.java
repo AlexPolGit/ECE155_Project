@@ -27,7 +27,7 @@ public class CreateCsvFile
         {
             writer = new FileWriter(file);
             pw = new PrintWriter(writer);
-            // get the accelerometer reading history
+            // get the filtered and non filtered accelerometer reading history
             FIFOQueue accelerometerReadings = m.listener.getAccelerometerReadings();
             FIFOQueue filteredAccelerometerReadings = m.listener.getAccelerometerReadingsFiltered();
 

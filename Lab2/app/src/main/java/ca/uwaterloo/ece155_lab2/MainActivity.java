@@ -1,7 +1,10 @@
 package ca.uwaterloo.ece155_lab2;
 
 import android.content.Intent;
+import android.content.res.Resources;
 import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.drawable.ColorDrawable;
 import android.hardware.Sensor;
 import android.hardware.SensorManager;
 import android.net.Uri;
@@ -12,6 +15,7 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.NumberPicker;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
@@ -19,6 +23,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.File;
+import java.lang.reflect.Field;
 import java.util.Arrays;
 
 public class MainActivity extends AppCompatActivity
@@ -59,8 +64,10 @@ public class MainActivity extends AppCompatActivity
 
         RelativeLayout relativeLayout = (RelativeLayout) findViewById(R.id.scrollLayout);
 
+        // set the text for the title of the first (unfiltered) graph
         text_graph = (TextView) findViewById(R.id.tv_title);
         text_graph.setText(R.string.graph_title);
+        text_graph.setTextSize(12);
 
         //region LINE_GRAPH
         // create a new linegraph using acc values
@@ -112,21 +119,21 @@ public class MainActivity extends AppCompatActivity
 
         // format the linegraph view on the app view
         RelativeLayout.LayoutParams params_filteredLineGraph = (RelativeLayout.LayoutParams) filteredLineGraph.getLayoutParams();
-        params_filteredLineGraph.addRule(RelativeLayout.BELOW, text_filtered.getId());
         params_filteredLineGraph.addRule(RelativeLayout.CENTER_HORIZONTAL);
-        params_filteredLineGraph.setMargins(10, 100, 10, 100);
+        params_filteredLineGraph.setMargins(10, 100, 10, 50);
         filteredLineGraph.setLayoutParams(params_filteredLineGraph);
         filteredLineGraph.setScaleX(1.75f);
         filteredLineGraph.setScaleY(1.5f);
         filteredLineGraph.setVisibility(View.VISIBLE);
         //endregion
 
+        //region FILTER_INTENSITY_PICKER
+        // add the number picker slider to customize intensity of low pass filter
         field_filter = new NumberPicker(getApplicationContext());
         field_filter.setId(field_filter.generateViewId());
         Log.d(debugFilter1, "Generated ID for field_filter: " + Integer.toString(field_filter.getId()));
         relativeLayout.addView(field_filter);
         RelativeLayout.LayoutParams params_field_filter = (RelativeLayout.LayoutParams) field_filter.getLayoutParams();
-        params_field_filter.addRule(RelativeLayout.BELOW, filteredLineGraph.getId());
         params_field_filter.addRule(RelativeLayout.CENTER_HORIZONTAL);
         params_field_filter.setMargins(10, 10, 10, 10);
         field_filter.setMinValue(1);
@@ -134,6 +141,9 @@ public class MainActivity extends AppCompatActivity
         field_filter.setValue(50);
         field_filter.setLayoutParams(params_field_filter);
         field_filter.setVisibility(View.VISIBLE);
+        setNumberPickerTextColor(field_filter, R.color.black);
+        setDividerColor(field_filter, R.color.black);
+        //endregion
 
         //region CSV_BUTTON
         // create the 100 acc output to csv button
@@ -146,7 +156,6 @@ public class MainActivity extends AppCompatActivity
         // format the button view on the app view
         relativeLayout.addView(btn_generateCSV);
         RelativeLayout.LayoutParams params_btn_generateCSV = (RelativeLayout.LayoutParams) btn_generateCSV.getLayoutParams();
-        params_btn_generateCSV.addRule(RelativeLayout.BELOW, field_filter.getId());
         params_btn_generateCSV.addRule(RelativeLayout.CENTER_HORIZONTAL);
         params_btn_generateCSV.setMargins(10, 10, 10, 10);
         btn_generateCSV.setLayoutParams(params_btn_generateCSV);
@@ -176,11 +185,16 @@ public class MainActivity extends AppCompatActivity
         RelativeLayout.LayoutParams params_direction = (RelativeLayout.LayoutParams) text_Direction.getLayoutParams();
         RelativeLayout.LayoutParams params_filtered = (RelativeLayout.LayoutParams) text_filtered.getLayoutParams();
 
-        params_ACC.addRule(relativeLayout.BELOW, btn_generateCSV.getId());
-        params_ACC_filtered.addRule(relativeLayout.BELOW, text_ACC.getId());
-        params_direction.addRule(relativeLayout.BELOW, text_ACC_filtered.getId());
+        // set the order each element is laid out (top most is first)
+        params_filteredLineGraph.addRule(RelativeLayout.BELOW, text_filtered.getId());
         params_filtered.addRule(relativeLayout.BELOW, lineGraph.getId());
+        params_direction.addRule(relativeLayout.BELOW, filteredLineGraph.getId());
+        params_ACC.addRule(relativeLayout.BELOW, text_Direction.getId());
+        params_ACC_filtered.addRule(relativeLayout.BELOW, text_ACC.getId());
+        params_field_filter.addRule(RelativeLayout.BELOW, text_ACC_filtered.getId());
+        params_btn_generateCSV.addRule(RelativeLayout.BELOW, field_filter.getId());
 
+        // center the elements
         params_ACC.addRule(RelativeLayout.CENTER_HORIZONTAL);
         params_ACC_filtered.addRule(RelativeLayout.CENTER_HORIZONTAL);
         params_direction.addRule(RelativeLayout.CENTER_HORIZONTAL);
@@ -217,7 +231,7 @@ public class MainActivity extends AppCompatActivity
         text_Direction.setText("No Dir");
         text_Direction.setTextSize(80.0f);
         text_filtered.setText(getString(R.string.filtered_graph_title));
-        text_filtered.setTextSize(30.0f);
+        text_filtered.setTextSize(12);
         //endregion
 
         // initialize the sensor listener and managers
@@ -295,4 +309,58 @@ public class MainActivity extends AppCompatActivity
         intent.setDataAndType(Uri.parse(new File(getExternalFilesDir("Accelerometer Data"), fileName).getAbsolutePath()), "file/*");
         startActivity(intent);
     }
+
+    //region NUMBER_PICKER_CHANGE PARAMS
+    // method to change the color of the number picker for the LPF intensity
+    public boolean setNumberPickerTextColor(NumberPicker numberPicker, int color)
+    {
+        final int count = numberPicker.getChildCount();
+        for(int i = 0; i < count; i++){
+            View child = numberPicker.getChildAt(i);
+            if(child instanceof EditText){
+                try{
+                    Field selectorWheelPaintField = numberPicker.getClass()
+                            .getDeclaredField("mSelectorWheelPaint");
+                    selectorWheelPaintField.setAccessible(true);
+                    ((Paint)selectorWheelPaintField.get(numberPicker)).setColor(color);
+                    ((EditText)child).setTextColor(getResources().getColor(color));
+                    numberPicker.invalidate();
+                    return true;
+                }
+                catch(NoSuchFieldException e){
+                    Log.d("NumberPickerTextColor", "NoSuchFieldException");
+                }
+                catch(IllegalAccessException e){
+                    Log.d("NumberPickerTextColor", "IllegalAccessException");
+                }
+                catch(IllegalArgumentException e){
+                    Log.d("NumberPickerTextColor", "IllegalArgumentException");
+                }
+            }
+        }
+        return false;
+    }
+
+    private void setDividerColor(NumberPicker picker, int color) {
+
+        java.lang.reflect.Field[] pickerFields = NumberPicker.class.getDeclaredFields();
+        for (java.lang.reflect.Field pf : pickerFields) {
+            if (pf.getName().equals("mSelectionDivider")) {
+                pf.setAccessible(true);
+                try {
+                    ColorDrawable colorDrawable = new ColorDrawable(color);
+                    pf.set(picker, colorDrawable);
+                } catch (IllegalArgumentException e) {
+                    e.printStackTrace();
+                } catch (Resources.NotFoundException e) {
+                    e.printStackTrace();
+                }
+                catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                }
+                break;
+            }
+        }
+    }
+    //endregion
 }

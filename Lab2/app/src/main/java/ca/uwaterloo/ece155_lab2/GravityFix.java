@@ -26,7 +26,7 @@ public class GravityFix{
         linearAcceleration[1] = event.values[1]-gravity[1];
         linearAcceleration[2] = event.values[2]-gravity[2];
 
-        setAccValues(linearAceleration[0],linearAceleration[1], linearAceleration[3]);
+        //setAccValues(linearAceleration[0],linearAceleration[1], linearAceleration[3]);
     }
 }
 

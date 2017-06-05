@@ -16,13 +16,13 @@ public class AccelerometerListener implements SensorEventListener
     private LineGraphView filteredOutput;
     private MainActivity main;
 
-    // stores the current value of the accelerometer
+    // stores the values for the acc readings
     private FloatVector3D readingACC;
     private FloatVector3D prevReadingACC;
     private FloatVector3D filtReadingACC;
     private FloatVector3D f;
 
-    // list to contain the 100 most recent acc readings
+    // queue object to contain the 100 most recent acc readings
     private FIFOQueue accelerometerReadings;
     private FIFOQueue accelerometerReadingsFiltered;
 
@@ -33,6 +33,7 @@ public class AccelerometerListener implements SensorEventListener
         return accelerometerReadings;
     }
 
+    // return the list of 100 filtered acc sensor readings
     public FIFOQueue getAccelerometerReadingsFiltered()
     {
         Log.d("debug1", "GETTING ACCEL READINGS: " + accelerometerReadingsFiltered.toString());
@@ -72,6 +73,7 @@ public class AccelerometerListener implements SensorEventListener
         accelerometerReadings.push(f);
     }
 
+    // same as above except for filtered acc readings
     private void addToFilteredAccelerometerReadings(float x, float y, float z)
     {
         f = new FloatVector3D(x, y, z);
@@ -97,6 +99,7 @@ public class AccelerometerListener implements SensorEventListener
             readingACC.setX(ev.values[0]);
             readingACC.setY(ev.values[1]);
             readingACC.setZ(ev.values[2]);
+            // apply
             filtReadingACC = SignalFilter.getSmoothVector(prevReadingACC, readingACC);
             addToAccelerometerReadings(ev.values[0], ev.values[1], ev.values[2]);
             addToFilteredAccelerometerReadings(filtReadingACC.getX(), filtReadingACC.getY(), filtReadingACC.getZ());
@@ -115,13 +118,14 @@ public class AccelerometerListener implements SensorEventListener
                     readingACC.getZ()
             };
 
+            // get the filtered acc vector
             float[] f2 = {
                     filtReadingACC.getX(),
                     filtReadingACC.getY(),
                     filtReadingACC.getZ()
             };
 
-            // output each component of the acc vector to the graph on its own individual line
+            // output each component of the acc (filt and non-filt) vector to the graph on its own individual line
             output.addPoint(f);
             filteredOutput.addPoint(f2);
         }

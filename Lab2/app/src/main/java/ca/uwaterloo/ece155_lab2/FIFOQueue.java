@@ -78,6 +78,7 @@ public class FIFOQueue
         return queue[index];
     }
 
+    // creates a list object and copies the values of the queue to it
     public List<FloatVector3D> toList()
     {
         List<FloatVector3D> list = new ArrayList<>();
