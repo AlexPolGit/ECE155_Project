@@ -2,8 +2,6 @@ package ca.uwaterloo.ece155_lab2;
 
 public class SignalFilter
 {
-    public static float FILTER_CONSTANT = 25.0f;
-
     public static FloatVector3D getSmoothVector(FloatVector3D prev, FloatVector3D curr)
     {
         FloatVector3D vec = new FloatVector3D();
@@ -12,6 +10,7 @@ public class SignalFilter
         vec.setZ(   prev.getZ() + (curr.getZ() - prev.getZ()) / MainActivity.field_filter.getValue()   );
         return vec;
     }
+
     /*
     public static FIFOQueue getSmoothQueue(FIFOQueue toFilter, int startIndex, int endIndex)
     {

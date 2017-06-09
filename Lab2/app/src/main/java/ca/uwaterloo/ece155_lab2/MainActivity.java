@@ -143,6 +143,7 @@ public class MainActivity extends AppCompatActivity
         field_filter.setVisibility(View.VISIBLE);
         setNumberPickerTextColor(field_filter, R.color.black);
         setDividerColor(field_filter, R.color.black);
+        field_filter.setValue(10);
         //endregion
 
         //region CSV_BUTTON

@@ -30,8 +30,8 @@ public class CreateCsvFile
             // get the filtered and non filtered accelerometer reading history
             FIFOQueue accelerometerReadings = m.listener.getAccelerometerReadings();
             FIFOQueue filteredAccelerometerReadings = m.listener.getAccelerometerReadingsFiltered();
-
             // output the 100 values of the accelerometer reading history to the csv file
+            pw.println("test");
             pw.println("Unfiltered:, , , , Filtered:");
             for (int i = 0; i < 100; i++)
             {
@@ -43,7 +43,7 @@ public class CreateCsvFile
                 pw.print(String.format("%.3f", ((FloatVector3D)filteredAccelerometerReadings.elementAt(i)).getY()) + ",");
                 pw.println(String.format("%.3f", ((FloatVector3D)filteredAccelerometerReadings.elementAt(i)).getZ()));
             }
-
+            Log.d(MainActivity.debugFilter1, "FINISHED WRITING TO FILE!");
         }
         // file could not be opened!
         catch (IOException e)

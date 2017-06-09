@@ -26,6 +26,16 @@ public class AccelerometerListener implements SensorEventListener
     private FIFOQueue accelerometerReadings;
     private FIFOQueue accelerometerReadingsFiltered;
 
+    // threshold constants for computing the direction
+    // TODO: find the best threshold values after testing
+    private final float THRESHOLD_X_POSITIVE = 2.0f;
+    private final float THRESHOLD_X_NEGATIVE = -2.0f;
+    private final float THRESHOLD_Y_POSITIVE = 2.0f;
+    private final float THRESHOLD_Y_NEGATIVE = -2.0f;
+
+    // TODO:
+    // enum gesture using the direction in strings.xml
+
     // get accessor method to return the list of 100 most recent acc sensor readings
     public FIFOQueue getAccelerometerReadings()
     {
@@ -128,6 +138,37 @@ public class AccelerometerListener implements SensorEventListener
             // output each component of the acc (filt and non-filt) vector to the graph on its own individual line
             output.addPoint(f);
             filteredOutput.addPoint(f2);
+
+
+            //TODO: IMPLEMENT FINITE STATE MACHINE HERE
+            // ***note this implementation does not care about the third direction (Z), just ignore it(?)
+
+            // check if the X or Y accelerations have exceeded the threshold range, if yes, begin computing direction
+            // then the next (100?) filt values must contain a point that exceeds the negative (or positive)
+            // threshold or else the user has not gone back to the original position
+            // ***also make sure that only one direction of acceleration has exceeded the threshold NOT BOTH X and Y
+
+            // if X exceeds the threshold range but Y does not change (much)
+            if ((filtReadingACC.getX() >= THRESHOLD_X_POSITIVE || filtReadingACC.getX() <= THRESHOLD_X_NEGATIVE)
+                    && filtReadingACC.getY() < THRESHOLD_Y_POSITIVE && filtReadingACC.getY() > THRESHOLD_Y_NEGATIVE) {
+                if (filtReadingACC.getX() >= THRESHOLD_X_POSITIVE) {
+                    // get the next values and check for a drop in acc_X
+                    // if there is a value <= threshhold_X_negative then direction = RIGHT
+                } else if (filtReadingACC.getX() <= THRESHOLD_X_NEGATIVE) {
+                    // get the next values and check for an increase in acc_X
+                    // if there is a value >= threshhold_X_positive then direction = LEFT
+                }
+            // if Y exceeds the threshold range but X does not change (much)
+            } else if ((filtReadingACC.getY() >= THRESHOLD_Y_POSITIVE || filtReadingACC.getY() <= THRESHOLD_Y_NEGATIVE)
+                    && filtReadingACC.getX() < THRESHOLD_X_POSITIVE && filtReadingACC.getX() > THRESHOLD_X_NEGATIVE) {
+                if (filtReadingACC.getY() >= THRESHOLD_Y_POSITIVE) {
+                    // get the next values and check for a drop in acc_Y
+                    // if there is a value <= threshhold_Y_negative then direction = UP
+                } else if (filtReadingACC.getY() <= THRESHOLD_Y_NEGATIVE) {
+                    // get the next values and check for a increase in acc_Y
+                    // if there is a value >= threshhold_Y_positive then direction = DOWN
+                }
+            }
         }
 
         // update the sensor readings on the screen
