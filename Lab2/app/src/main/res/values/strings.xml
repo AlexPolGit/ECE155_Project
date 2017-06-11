@@ -34,4 +34,6 @@
     <string name="orientation_right_up">Up-Right</string>
     <string name="orientation_up">Up</string>
     <string name="orientation_down">Down</string>
+    <string name="orientation_none">None</string>
+    <string name="orientation_error">Error</string>
 </resources>

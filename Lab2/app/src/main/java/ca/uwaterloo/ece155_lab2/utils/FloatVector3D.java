@@ -1,4 +1,4 @@
-package ca.uwaterloo.ece155_lab2;
+package ca.uwaterloo.ece155_lab2.utils;
 
 import android.util.Log;
 

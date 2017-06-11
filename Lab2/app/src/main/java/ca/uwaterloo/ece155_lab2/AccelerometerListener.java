@@ -5,8 +5,8 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.util.Log;
 
-import java.util.ArrayList;
-
+import ca.uwaterloo.ece155_lab2.utils.FIFOQueue;
+import ca.uwaterloo.ece155_lab2.utils.FloatVector3D;
 import ca.uwaterloo.sensortoy.LineGraphView;
 
 public class AccelerometerListener implements SensorEventListener
@@ -26,17 +26,51 @@ public class AccelerometerListener implements SensorEventListener
     private FIFOQueue accelerometerReadings;
     private FIFOQueue accelerometerReadingsFiltered;
 
+    // FSM class declaration
+    SignalProcessor signalProcessor = new SignalProcessor();
+
+    // number of readings since last FSM update
+    private int accCount = 0;
+
+    // the possible hand gestures and the current gesture
+    public enum gestures
+    {
+        NONE, ERR, RIGHT, LEFT, UP, DOWN
+    }
+    public static gestures gesture = gestures.NONE;
+
+    // the possible FSM states and the current state
+    public enum states
+    {
+        UNKNOWN, WAIT, X_INCR, Z_INCR, X_DECR, Z_DECR
+    }
+    public static states currentState = states.WAIT;
+
+    // X and Z thresholds
+    public static final float Xthreshhold = 0.75f;
+    public static final float Zthreshhold = 0.75f;
+
+    // is it safe to update the FSM?
+    public static boolean isSafe = true;
+
+    // time-out after FSM update is declared unsafe
+    private final int safeTime = 30;
+    private int s = safeTime;
+
+    // predefined number of readings before FSM is updated
+    private final int updateCount = 10;
+
     // get accessor method to return the list of 100 most recent acc sensor readings
     public FIFOQueue getAccelerometerReadings()
     {
-        Log.d("debug1", "GETTING ACCEL READINGS: " + accelerometerReadings.toString());
+        //Log.d("debug1", "GETTING ACCEL READINGS: " + accelerometerReadings.toString());
         return accelerometerReadings;
     }
 
     // return the list of 100 filtered acc sensor readings
     public FIFOQueue getAccelerometerReadingsFiltered()
     {
-        Log.d("debug1", "GETTING ACCEL READINGS: " + accelerometerReadingsFiltered.toString());
+        //Log.d("debug1", "GETTING ACCEL READINGS: " + accelerometerReadingsFiltered.toString());
         return accelerometerReadingsFiltered;
     }
 
@@ -80,7 +114,29 @@ public class AccelerometerListener implements SensorEventListener
         accelerometerReadingsFiltered.push(f);
     }
 
-    // method is called if a sensor event has been triggered
+    // change the current gesture to the specified gesture
+    public static void changeGesture(gestures changeTo)
+    {
+        gesture = changeTo;
+    }
+
+    // get the current gesture (for text view)
+    public static gestures getGesture()
+    {
+        return gesture;
+    }
+
+    // applies LPF to the accelerometer readings
+    private FloatVector3D getSmoothVector()
+    {
+        FloatVector3D vec = new FloatVector3D();
+        vec.setX(   prevReadingACC.getX() + (readingACC.getX() - prevReadingACC.getX()) / MainActivity.field_filter.getValue()   );
+        vec.setY(   prevReadingACC.getY() + (readingACC.getY() - prevReadingACC.getY()) / MainActivity.field_filter.getValue()   );
+        vec.setZ(   prevReadingACC.getZ() + (readingACC.getZ() - prevReadingACC.getZ()) / MainActivity.field_filter.getValue()   );
+        return vec;
+    }
+
+    // method is called if a sensor event has been triggered, also updates the FSM every defined number of readings
     public void onSensorChanged(SensorEvent ev)
     {
         // Add new acc reading to the acc sensor value and check if the record high should be changed
@@ -100,7 +156,7 @@ public class AccelerometerListener implements SensorEventListener
             readingACC.setY(ev.values[1]);
             readingACC.setZ(ev.values[2]);
             // apply
-            filtReadingACC = SignalFilter.getSmoothVector(prevReadingACC, readingACC);
+            filtReadingACC = getSmoothVector();
             addToAccelerometerReadings(ev.values[0], ev.values[1], ev.values[2]);
             addToFilteredAccelerometerReadings(filtReadingACC.getX(), filtReadingACC.getY(), filtReadingACC.getZ());
 
@@ -122,7 +178,9 @@ public class AccelerometerListener implements SensorEventListener
             float[] f2 = {
                     filtReadingACC.getX(),
                     filtReadingACC.getY(),
-                    filtReadingACC.getZ()
+                    filtReadingACC.getZ(),
+                    Xthreshhold,
+                    -Xthreshhold
             };
 
             // output each component of the acc (filt and non-filt) vector to the graph on its own individual line
@@ -132,5 +190,50 @@ public class AccelerometerListener implements SensorEventListener
 
         // update the sensor readings on the screen
         main.setTextOfDebugTextViews(readingACC, filtReadingACC);
+
+        // updates the FSM every [updateCount] readings of the accelerometer
+        if (accCount < updateCount)
+        {
+            accCount++;
+        }
+        // doesn't allow the FSM to update if a gesture change has recently occurred
+        else if (!isSafe)
+        {
+            s--;
+            // if s = 0, then it is now "safe" to update the FSM again
+            if (s == 0)
+            {
+                isSafe = true;
+                s = safeTime;
+                Log.d("debug1", "now safe");
+            }
+        }
+        // FSM is permitted to update
+        else if (isSafe)
+        {
+            // If in WAIT state and |x| > |z|, give priority to the X motion
+            if (Math.abs(filtReadingACC.getX()) >= Math.abs(filtReadingACC.getZ()) && currentState == states.WAIT)
+            {
+                signalProcessor.fsmX(filtReadingACC.getX());
+            }
+            // If in WAIT state and |x| < |z|, give priority to the Z motion
+            else if (Math.abs(filtReadingACC.getX()) < Math.abs(filtReadingACC.getZ()) && currentState == states.WAIT)
+            {
+                signalProcessor.fsmZ(filtReadingACC.getZ());
+            }
+            // If in X-based state
+            else if (currentState == states.X_INCR || currentState == states.X_DECR )
+            {
+                signalProcessor.fsmX(filtReadingACC.getX());
+            }
+            // If in Z-based state
+            else if (currentState == states.Z_INCR || currentState == states.Z_DECR )
+            {
+                signalProcessor.fsmZ(filtReadingACC.getZ());
+            }
+
+            // start counting up again
+            accCount = 0;
+        }
     }
 }

@@ -6,6 +6,9 @@ import java.io.*;
 import java.io.FileWriter;
 import java.io.IOException;
 
+import ca.uwaterloo.ece155_lab2.utils.FIFOQueue;
+import ca.uwaterloo.ece155_lab2.utils.FloatVector3D;
+
 // class that manages the accelerometer data output into a .csv file
 public class CreateCsvFile
 {

@@ -1,10 +1,10 @@
-package ca.uwaterloo.ece155_lab2;
+package ca.uwaterloo.ece155_lab2.unused;
 
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
-import android.util.Log;
 
+import ca.uwaterloo.ece155_lab2.MainActivity;
 import ca.uwaterloo.sensortoy.LineGraphView;
 
 public class LightSensorListener implements SensorEventListener

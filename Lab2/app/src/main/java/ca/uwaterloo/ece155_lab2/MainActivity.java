@@ -18,7 +18,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.NumberPicker;
 import android.widget.RelativeLayout;
-import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -26,10 +25,12 @@ import java.io.File;
 import java.lang.reflect.Field;
 import java.util.Arrays;
 
+import ca.uwaterloo.ece155_lab2.utils.FloatVector3D;
+
 public class MainActivity extends AppCompatActivity
 {
     public final static String debugFilter1 = "debug1";
-    public final int sensorDelay = SensorManager.SENSOR_DELAY_GAME;
+    public final int SENSOR_DELAY = SensorManager.SENSOR_DELAY_GAME;
 
     ca.uwaterloo.sensortoy.LineGraphView lineGraph;
     ca.uwaterloo.sensortoy.LineGraphView filteredLineGraph;
@@ -109,7 +110,9 @@ public class MainActivity extends AppCompatActivity
                         Arrays.asList(
                                 getString(R.string.filtered_accelerator_x_label),
                                 getString(R.string.filtered_accelerator_y_label),
-                                getString(R.string.filtered_accelerator_z_label)
+                                getString(R.string.filtered_accelerator_z_label),
+                                "X Threshold",
+                                "-X Threshold"
                         )
                 );
         // add the line graph to the app view
@@ -242,7 +245,7 @@ public class MainActivity extends AppCompatActivity
         accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION);
 
         // register the sensors to the sensor listeners
-        sensorManager.registerListener(listener, accelerometer, sensorDelay);
+        sensorManager.registerListener(listener, accelerometer, SENSOR_DELAY);
 
         //region BUTTON_EVENT_HANDLERS
         // generate and read into a .csv file the past 100 readings for the accelerometer
@@ -281,7 +284,7 @@ public class MainActivity extends AppCompatActivity
     {
         super.onResume();
         Log.d(debugFilter1, "APP RESUMED.");
-        sensorManager.registerListener(listener, accelerometer, sensorDelay);
+        sensorManager.registerListener(listener, accelerometer, SENSOR_DELAY);
     }
 
     // runs when app is restarted, re-enables the listener
@@ -290,7 +293,7 @@ public class MainActivity extends AppCompatActivity
     {
         super.onRestart();
         Log.d(debugFilter1, "APP RESTARTED.");
-        sensorManager.registerListener(listener, accelerometer, sensorDelay);
+        sensorManager.registerListener(listener, accelerometer, SENSOR_DELAY);
     }
 
     // method that sets the text related to the sensor readings to the app view
@@ -298,6 +301,13 @@ public class MainActivity extends AppCompatActivity
     {
         text_ACC.setText(Html.fromHtml(getString(R.string.accelerometer_reading) + String.format("<br>(<font color=#ff0000>%.3f</font>, <font color=#008000>%.3f</font>, <font color=#0000ff>%.3f</font>)", acc.getX(), acc.getY(), acc.getZ()) + " m/s²"));
         text_ACC_filtered.setText(Html.fromHtml(getString(R.string.filtered_accelerometer_reading) + String.format("<br>(<font color=#ff0000>%.3f</font>, <font color=#008000>%.3f</font>, <font color=#0000ff>%.3f</font>)", facc.getX(), facc.getY(), facc.getZ()) + " m/s²"));
+
+        if (listener.getGesture() == AccelerometerListener.gestures.RIGHT) text_Direction.setText(getString(R.string.orientation_right));
+        else if (listener.getGesture() == AccelerometerListener.gestures.LEFT) text_Direction.setText(getString(R.string.orientation_left));
+        else if (listener.getGesture() == AccelerometerListener.gestures.UP) text_Direction.setText(getString(R.string.orientation_up));
+        else if (listener.getGesture() == AccelerometerListener.gestures.DOWN) text_Direction.setText(getString(R.string.orientation_down));
+        else if (listener.getGesture() == AccelerometerListener.gestures.NONE) text_Direction.setText(getString(R.string.orientation_none));
+        else text_Direction.setText(getString(R.string.orientation_error));
     }
 
     // opens the folder of the csv file
@@ -315,25 +325,31 @@ public class MainActivity extends AppCompatActivity
     public boolean setNumberPickerTextColor(NumberPicker numberPicker, int color)
     {
         final int count = numberPicker.getChildCount();
-        for(int i = 0; i < count; i++){
+        for (int i = 0; i < count; i++)
+        {
             View child = numberPicker.getChildAt(i);
-            if(child instanceof EditText){
-                try{
+            if (child instanceof EditText)
+            {
+                try
+                {
                     Field selectorWheelPaintField = numberPicker.getClass()
                             .getDeclaredField("mSelectorWheelPaint");
                     selectorWheelPaintField.setAccessible(true);
-                    ((Paint)selectorWheelPaintField.get(numberPicker)).setColor(color);
-                    ((EditText)child).setTextColor(getResources().getColor(color));
+                    ((Paint) selectorWheelPaintField.get(numberPicker)).setColor(color);
+                    ((EditText) child).setTextColor(getResources().getColor(color));
                     numberPicker.invalidate();
                     return true;
                 }
-                catch(NoSuchFieldException e){
+                catch (NoSuchFieldException e)
+                {
                     Log.d("NumberPickerTextColor", "NoSuchFieldException");
                 }
-                catch(IllegalAccessException e){
+                catch (IllegalAccessException e)
+                {
                     Log.d("NumberPickerTextColor", "IllegalAccessException");
                 }
-                catch(IllegalArgumentException e){
+                catch (IllegalArgumentException e)
+                {
                     Log.d("NumberPickerTextColor", "IllegalArgumentException");
                 }
             }
@@ -341,21 +357,30 @@ public class MainActivity extends AppCompatActivity
         return false;
     }
 
-    private void setDividerColor(NumberPicker picker, int color) {
+    private void setDividerColor(NumberPicker picker, int color)
+    {
 
         java.lang.reflect.Field[] pickerFields = NumberPicker.class.getDeclaredFields();
-        for (java.lang.reflect.Field pf : pickerFields) {
-            if (pf.getName().equals("mSelectionDivider")) {
+        for (java.lang.reflect.Field pf : pickerFields)
+        {
+            if (pf.getName().equals("mSelectionDivider"))
+            {
                 pf.setAccessible(true);
-                try {
+                try
+                {
                     ColorDrawable colorDrawable = new ColorDrawable(color);
                     pf.set(picker, colorDrawable);
-                } catch (IllegalArgumentException e) {
-                    e.printStackTrace();
-                } catch (Resources.NotFoundException e) {
+                }
+                catch (IllegalArgumentException e)
+                {
                     e.printStackTrace();
                 }
-                catch (IllegalAccessException e) {
+                catch (Resources.NotFoundException e)
+                {
+                    e.printStackTrace();
+                }
+                catch (IllegalAccessException e)
+                {
                     e.printStackTrace();
                 }
                 break;

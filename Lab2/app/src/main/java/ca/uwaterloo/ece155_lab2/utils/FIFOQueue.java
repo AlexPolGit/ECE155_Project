@@ -1,4 +1,4 @@
-package ca.uwaterloo.ece155_lab2;
+package ca.uwaterloo.ece155_lab2.utils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,6 +56,7 @@ public class FIFOQueue
         {
             pop();
             queue[0] = obj;
+            return true;
         }
         
         return false;
@@ -64,12 +65,19 @@ public class FIFOQueue
     // removes the last (or "first in") element of the queue
     public boolean pop()
     {
-        Object[] temp = new Object[size - 1];
-        System.arraycopy(queue, 0, temp, 0, size - 1);
-        queue[0] = null;
-        System.arraycopy(temp, 0, queue, 1, size - 1);
-        
-        return false;
+        try
+        {
+            Object[] temp = new Object[size - 1];
+            System.arraycopy(queue, 0, temp, 0, size - 1);
+            queue[0] = null;
+            System.arraycopy(temp, 0, queue, 1, size - 1);
+
+            return true;
+        }
+        catch (Exception e)
+        {
+            return false;
+        }
     }
 
     // returns the element at a specified index
