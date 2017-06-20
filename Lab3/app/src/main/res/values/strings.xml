@@ -1,0 +1,39 @@
+<resources>
+    <string name="app_name">ECE 155 Project</string>
+    <string name="DEFAULT_STRING">DEFAULT STRING</string>
+
+    <!-- Store the text for the line graph title  -->
+    <string name="graph_title">Line Graph:</string>
+    <string name="filtered_graph_title">Filtered Line Graph:</string>
+
+    <!-- Store the text for the buttons -->
+    <string name="generate_csv">Generate CSV Record for Sensors</string>
+
+    <!-- Store the text for the sensor reading titles for the line graph  -->
+    <string name="accelerator_x_label">Accelerator X</string>
+    <string name="accelerator_y_label">Accelerator Y</string>
+    <string name="accelerator_z_label">Accelerator Z</string>
+    <string name="filtered_accelerator_x_label">Filtered ACC X</string>
+    <string name="filtered_accelerator_y_label">Filtered ACC Y</string>
+    <string name="filtered_accelerator_z_label">Filtered ACC Z</string>
+	
+	<!-- Store the text for the sensor reading titles  -->
+    <string name="accelerometer_reading">Accelerometer Reading:</string>
+    <string name="filtered_accelerometer_reading">Filtered Accelerometer Reading:</string>
+
+    <!-- Store the text for toast  -->
+    <string name="toast_clear">Cleared Record Data</string>
+    <string name="toast_create_csv">CSV File Created</string>
+
+    <!-- Store the text for orientations of phone -->
+    <string name="orientation_left">Left</string>
+    <string name="orientation_left_down">Down-Left</string>
+    <string name="orientation_left_up">Up-Left</string>
+    <string name="orientation_right">Right</string>
+    <string name="orientation_right_down">Down-Right</string>
+    <string name="orientation_right_up">Up-Right</string>
+    <string name="orientation_up">Up</string>
+    <string name="orientation_down">Down</string>
+    <string name="orientation_none">None</string>
+    <string name="orientation_error">Error</string>
+</resources>
