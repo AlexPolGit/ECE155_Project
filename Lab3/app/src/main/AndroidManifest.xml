@@ -9,7 +9,7 @@
         android:roundIcon="@mipmap/ic_accelerometer"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity">
+        <activity android:name="ca.uwaterloo.ece155_lab3.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

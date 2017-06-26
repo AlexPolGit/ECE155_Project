@@ -4,7 +4,11 @@ import android.util.Log;
 
 public class SignalProcessor
 {
-    public SignalProcessor() {}
+    GameLoopTask gameLoopTask;
+    public SignalProcessor(GameLoopTask loop)
+    {
+        gameLoopTask = loop;
+    }
 
     // time-out variables for FSM
     private int timeOutX = 30;
@@ -44,6 +48,7 @@ public class SignalProcessor
                     AccelerometerListener.currentState = AccelerometerListener.states.WAIT;
                     cX = timeOutX;
                     AccelerometerListener.isSafe = false;
+                    gameLoopTask.setDirection(GameLoopTask.gameDirections.RIGHT);
 
                     Log.d("debug1", "RIGHT");
                 }
@@ -68,6 +73,7 @@ public class SignalProcessor
                     AccelerometerListener.currentState = AccelerometerListener.states.WAIT;
                     cX = timeOutX;
                     AccelerometerListener.isSafe = false;
+                    gameLoopTask.setDirection(GameLoopTask.gameDirections.LEFT);
 
                     Log.d("debug1", "LEFT");
                 }
@@ -124,6 +130,7 @@ public class SignalProcessor
                     AccelerometerListener.currentState = AccelerometerListener.states.WAIT;
                     cZ = timeOutZ;
                     AccelerometerListener.isSafe = false;
+                    gameLoopTask.setDirection(GameLoopTask.gameDirections.UP);
 
                     Log.d("debug1", "UP");
                 }
@@ -148,6 +155,7 @@ public class SignalProcessor
                     AccelerometerListener.currentState = AccelerometerListener.states.WAIT;
                     cZ = timeOutZ;
                     AccelerometerListener.isSafe = false;
+                    gameLoopTask.setDirection(GameLoopTask.gameDirections.DOWN);
 
                     Log.d("debug1", "DOWN");
                 }

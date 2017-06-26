@@ -12,8 +12,6 @@ import ca.uwaterloo.sensortoy.LineGraphView;
 public class AccelerometerListener implements SensorEventListener
 {
     // object references
-    private LineGraphView output;
-    private LineGraphView filteredOutput;
     private MainActivity main;
 
     // stores the values for the acc readings
@@ -27,7 +25,7 @@ public class AccelerometerListener implements SensorEventListener
     private FIFOQueue accelerometerReadingsFiltered;
 
     // FSM class declaration
-    SignalProcessor signalProcessor = new SignalProcessor();
+    SignalProcessor signalProcessor;
 
     // number of readings since last FSM update
     private int accCount = 0;
@@ -77,17 +75,19 @@ public class AccelerometerListener implements SensorEventListener
     // stores the history record of accelerometer
     private FloatVector3D highestReadingACC;
 
+    GameLoopTask gameLoop;
+
     // constructor that creates a new data entry for the graph
-    public AccelerometerListener(LineGraphView outputView, LineGraphView outputViewFiltered, MainActivity m)
+    public AccelerometerListener(MainActivity m, GameLoopTask loop)
     {
-        output = outputView;
-        filteredOutput = outputViewFiltered;
         main = m;
         accelerometerReadings = new FIFOQueue(100);
         accelerometerReadingsFiltered = new FIFOQueue(100);
         readingACC = new FloatVector3D();
         filtReadingACC = new FloatVector3D();
         highestReadingACC = new FloatVector3D();
+        gameLoop = loop;
+        signalProcessor = new SignalProcessor(loop);
     }
 
     //  clears the history of records
@@ -130,9 +130,9 @@ public class AccelerometerListener implements SensorEventListener
     private FloatVector3D getSmoothVector()
     {
         FloatVector3D vec = new FloatVector3D();
-        vec.setX(   prevReadingACC.getX() + (readingACC.getX() - prevReadingACC.getX()) / MainActivity.field_filter.getValue()   );
-        vec.setY(   prevReadingACC.getY() + (readingACC.getY() - prevReadingACC.getY()) / MainActivity.field_filter.getValue()   );
-        vec.setZ(   prevReadingACC.getZ() + (readingACC.getZ() - prevReadingACC.getZ()) / MainActivity.field_filter.getValue()   );
+        vec.setX(   prevReadingACC.getX() + (readingACC.getX() - prevReadingACC.getX()) / MainActivity.field_filter   );
+        vec.setY(   prevReadingACC.getY() + (readingACC.getY() - prevReadingACC.getY()) / MainActivity.field_filter   );
+        vec.setZ(   prevReadingACC.getZ() + (readingACC.getZ() - prevReadingACC.getZ()) / MainActivity.field_filter   );
         return vec;
     }
 
@@ -179,17 +179,8 @@ public class AccelerometerListener implements SensorEventListener
                     filtReadingACC.getX(),
                     filtReadingACC.getY(),
                     filtReadingACC.getZ(),
-                    Xthreshhold,
-                    -Xthreshhold
             };
-
-            // output each component of the acc (filt and non-filt) vector to the graph on its own individual line
-            output.addPoint(f);
-            filteredOutput.addPoint(f2);
         }
-
-        // update the sensor readings on the screen
-        main.setTextOfDebugTextViews(readingACC, filtReadingACC);
 
         // updates the FSM every [updateCount] readings of the accelerometer
         if (accCount < updateCount)
@@ -235,5 +226,8 @@ public class AccelerometerListener implements SensorEventListener
             // start counting up again
             accCount = 0;
         }
+
+        // update the sensor readings on the screen
+        main.setTextOfDebugTextViews();
     }
 }

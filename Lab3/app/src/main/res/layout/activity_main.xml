@@ -9,36 +9,28 @@
     android:paddingLeft="16dp"
     android:paddingRight="16dp"
     android:screenOrientation="portrait"
-    tools:context="ca.uwaterloo.ece155_lab2.MainActivity">
+    tools:context="ca.uwaterloo.ece155_lab3.MainActivity">
 
-        <ScrollView
-            android:id="@+id/scrollView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
+        <ImageView
+            android:id="@+id/gameBoard"
+            android:layout_width="300dp"
+            android:layout_height="300dp"
+            android:adjustViewBounds="true"
+            app:srcCompat="@drawable/gameboard"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"/>
 
-            <RelativeLayout
-                android:id="@+id/scrollLayout"
-                android:layout_width="match_parent"
-                android:layout_height="750dp"
-                android:orientation="vertical">
+    <TextView
+        android:id="@+id/text_dir"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="TEXT"
+        android:textAlignment="center"
+        android:textColor="@android:color/black"
+        android:textSize="36sp"
+        android:textStyle="bold"
+        android:layout_marginTop="28dp"
+        android:layout_below="@+id/gameBoard"
+        android:layout_centerHorizontal="true"/>
 
-                <!-- default text -->
-                <TextView
-                    android:id="@+id/tv_title"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentStart="true"
-                    android:layout_alignParentTop="true"
-                    android:layout_marginTop="10dp"
-                    android:text="@string/DEFAULT_STRING"
-                    android:textAlignment="center"
-                    android:textColor="@color/black"
-                    android:textSize="30sp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"/>
-
-            </RelativeLayout>
-        </ScrollView>
 </RelativeLayout>
