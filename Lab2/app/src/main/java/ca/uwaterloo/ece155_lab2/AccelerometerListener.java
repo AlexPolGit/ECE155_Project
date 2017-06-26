@@ -47,8 +47,8 @@ public class AccelerometerListener implements SensorEventListener
     public static states currentState = states.WAIT;
 
     // X and Z thresholds
-    public static final float Xthreshhold = 0.75f;
-    public static final float Zthreshhold = 0.75f;
+    public static final float Xthreshhold = 1f;
+    public static final float Zthreshhold = 1f;
 
     // is it safe to update the FSM?
     public static boolean isSafe = true;
