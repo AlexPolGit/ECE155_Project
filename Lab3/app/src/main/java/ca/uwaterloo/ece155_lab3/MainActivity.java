@@ -20,14 +20,14 @@ public class MainActivity extends AppCompatActivity
 
     TextView text_direction;
     ImageView img_gameboard;
-    GameBlock gameBlock;
 
     public float gameboardWidth;
     public float gameboardHeight;
-    public static float gameboardUnitWidth;
-    public static float gameboardUnitHeight;
+    public static int gameboardUnitWidth;
+    public static int gameboardUnitHeight;
+    public static int[] gameBoardOrigin = new int[2];
 
-    static final int field_filter = 50;
+    static final int field_filter = 10;
 
     // sensor values
     SensorManager sensorManager;
@@ -42,14 +42,16 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         Log.d(debugFilter1, "APP CREATED.");
 
+        // setup the board
         RelativeLayout relativeLayout = (RelativeLayout) findViewById(R.id.relativeLayout);
         img_gameboard = (ImageView) findViewById(R.id.gameBoard);
         text_direction = (TextView) findViewById(R.id.text_dir);
 
+        img_gameboard.getLocationOnScreen(gameBoardOrigin);
         gameboardWidth = img_gameboard.getLayoutParams().width;
         gameboardHeight = img_gameboard.getLayoutParams().height;
-        gameboardUnitWidth = gameboardWidth / 4;
-        gameboardUnitHeight = gameboardHeight / 4;
+        gameboardUnitWidth = (int)(gameboardWidth / 4);
+        gameboardUnitHeight = (int)(gameboardHeight / 4);
         Log.d("debug1", "Gameboard Height: " + gameboardHeight + ", Unit: " + gameboardUnitHeight);
         Log.d("debug1", "Gameboard Width: " + gameboardWidth + ", Unit: " + gameboardUnitWidth);
 

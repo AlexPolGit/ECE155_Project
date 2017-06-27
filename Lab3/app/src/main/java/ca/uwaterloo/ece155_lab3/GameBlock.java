@@ -9,7 +9,23 @@ import ca.uwaterloo.ece155_lab2.R;
 
 public class GameBlock extends android.support.v7.widget.AppCompatImageView
 {
-    private final float IMAGE_SCALE = 0.50f;
+    private static final float IMAGE_SCALE = 0.50f;
+    // variables for animation
+    private static final float baseVelocity = 30.0f;
+    private static final float acceleration = 10.0f;
+    private static float velocity;
+    enum state {STARTED, MOVING, STOPPED};
+
+    // block properties
+    private int targetCoordX;
+    private int targetCoordY;
+    private state blockState;
+    public state getBlockState() {
+        return blockState;
+    }
+    private int blockOffset = 94;
+
+    // block properties
     private int myCoordX;
     private int myCoordY;
     private int xLoc;
@@ -23,6 +39,10 @@ public class GameBlock extends android.support.v7.widget.AppCompatImageView
         xLoc = 0;
         yLoc = 0;
 
+        blockState = state.STOPPED;
+        velocity = baseVelocity;
+
+        // set the image view
         this.setImageResource(R.drawable.gameblock);
         this.setScaleX(IMAGE_SCALE);
         this.setScaleY(IMAGE_SCALE);
@@ -31,9 +51,7 @@ public class GameBlock extends android.support.v7.widget.AppCompatImageView
         this.setVisibility(VISIBLE);
     }
 
-    private final int c = 150;
-
-    public void move(GameLoopTask.gameDirections dir)
+    public boolean move(GameLoopTask.gameDirections dir)
     {
         switch (dir)
         {
@@ -41,9 +59,18 @@ public class GameBlock extends android.support.v7.widget.AppCompatImageView
             {
                 if (xLoc < 3)
                 {
-                    xLoc++;
-                    myCoordX += MainActivity.gameboardUnitWidth;
-                    setX(myCoordX);
+                    if (blockState == state.STOPPED)
+                        blockState = state.STARTED;
+                    if (blockState == state.STARTED) {
+                        xLoc++;
+                        targetCoordX = myCoordX + MainActivity.gameboardUnitWidth;
+                    }
+
+                    myCoordX += velocity;
+                    velocity += acceleration;
+                    this.setX(myCoordX);
+                    if (myCoordX >= targetCoordX)
+                        blockState = state.STOPPED;
                 }
                 break;
             }
@@ -51,9 +78,18 @@ public class GameBlock extends android.support.v7.widget.AppCompatImageView
             {
                 if (xLoc > 0)
                 {
-                    xLoc--;
-                    myCoordX -= MainActivity.gameboardUnitWidth;
-                    setX(myCoordX);
+                    if (blockState == state.STOPPED)
+                        blockState = state.STARTED;
+                    if (blockState == state.STARTED) {
+                        xLoc--;
+                        targetCoordX = myCoordX - MainActivity.gameboardUnitWidth;
+                    }
+
+                    myCoordX -= velocity;
+                    velocity += acceleration;
+                    this.setX(myCoordX);
+                    if (myCoordX <= targetCoordX)
+                        blockState = state.STOPPED;
                 }
                 break;
             }
@@ -61,9 +97,18 @@ public class GameBlock extends android.support.v7.widget.AppCompatImageView
             {
                 if (yLoc > 0)
                 {
-                    yLoc--;
-                    myCoordY -= MainActivity.gameboardUnitHeight;
-                    setY(myCoordY);
+                    if (blockState == state.STOPPED)
+                        blockState = state.STARTED;
+                    if (blockState == state.STARTED) {
+                        yLoc--;
+                        targetCoordY = myCoordY - MainActivity.gameboardUnitHeight;
+                    }
+
+                    myCoordY -= velocity;
+                    velocity += acceleration;
+                    this.setY(myCoordY);
+                    if (myCoordY <= targetCoordY)
+                        blockState = state.STOPPED;
                 }
                 break;
             }
@@ -71,9 +116,18 @@ public class GameBlock extends android.support.v7.widget.AppCompatImageView
             {
                 if (yLoc < 3)
                 {
-                    yLoc++;
-                    myCoordY += MainActivity.gameboardUnitHeight;
-                    setY(myCoordY);
+                    if (blockState == state.STOPPED)
+                        blockState = state.STARTED;
+                    if (blockState == state.STARTED) {
+                        yLoc++;
+                        targetCoordY = myCoordY + MainActivity.gameboardUnitHeight;
+                    }
+
+                    myCoordY += velocity;
+                    velocity += acceleration;
+                    this.setY(myCoordY);
+                    if (myCoordY >= targetCoordY)
+                        blockState = state.STOPPED;
                 }
                 break;
             }
@@ -84,6 +138,20 @@ public class GameBlock extends android.support.v7.widget.AppCompatImageView
                 break;
             }
         }
+
+        // block is now in motion after the first iteration of the first tick
+        if (blockState == state.STARTED)
+            blockState = state.MOVING;
+
         Log.d("debug1", String.format("Block Position: (%d, %d)", xLoc, yLoc));
+
+        if (blockState == state.STOPPED) {
+            velocity = baseVelocity;
+            targetCoordX = 0;
+            targetCoordY = 0;
+            return false; // doMove in gamelooptask is then false, so stops moving
+        } else {
+            return true; // doMove in gamelooptask is then true so continues moving
+        }
     }
 }
