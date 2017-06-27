@@ -62,11 +62,6 @@ public class MainActivity extends AppCompatActivity
         dpWidth = getResources().getDisplayMetrics().widthPixels / getResources().getDisplayMetrics().density;
         img_gameboard.getLocationOnScreen(gameBoardOrigin);
         gameboardWidth = img_gameboard.getLayoutParams().width;
-        Log.d("debug1", Integer.toString(img_gameboard.getWidth()));
-        //gameboardUnitWidth = img_gameboard.getWidth();
-        //gameboardUnitWidth = ((gameboardWidth / 4) * scale + 200f);
-        //gameboardUnitWidth = dpWidth / 1.6f;
-        Log.d("debug1", "Gameboard Width: " + gameboardWidth + ", Unit: " + gameboardUnitWidth);
 
         text_direction.setText("No Dir");
 

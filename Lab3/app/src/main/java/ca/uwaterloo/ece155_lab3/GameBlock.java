@@ -71,7 +71,7 @@ public class GameBlock extends android.support.v7.widget.AppCompatImageView
     public boolean move(GameLoopTask.gameDirections dir)
     {
         translationDistance = MainActivity.img_gameboard.getWidth() / 4;
-        Log.d("debug1", "WIDTH TO MOVE: " + Integer.toString(MainActivity.img_gameboard.getWidth() / 4));
+        //Log.d("debug1", "WIDTH TO MOVE: " + Integer.toString(MainActivity.img_gameboard.getWidth() / 4));
         switch (dir)
         {
             // right direction logic
