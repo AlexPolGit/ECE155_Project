@@ -15,6 +15,9 @@ public class GameLoopTask extends TimerTask
     private RelativeLayout myRL;
 
     private GameBlock gameBlock;
+    public GameBlock getGameBlock() {
+        return gameBlock;
+    }
     private boolean doMove = false;
 
     enum gameDirections
@@ -31,7 +34,9 @@ public class GameLoopTask extends TimerTask
         myActivity = a;
         myContext = c;
         myRL = r;
-        gameBlock = new GameBlock(c, -75, -75);
+        gameBlock = new GameBlock(c,
+                MainActivity.gameBoardOrigin[0] + 45, // -94 when not horizontally aligned!
+                MainActivity.gameBoardOrigin[0] - 94);
         myRL.addView(gameBlock);
     }
 
@@ -52,8 +57,7 @@ public class GameLoopTask extends TimerTask
                     upTime += 50;
                     if (doMove)
                     {
-                        gameBlock.move(gameDirection);
-                        doMove = false;
+                        doMove = gameBlock.move(gameDirection);
                     }
                     if (upTime % 1000 == 0)
                     {
