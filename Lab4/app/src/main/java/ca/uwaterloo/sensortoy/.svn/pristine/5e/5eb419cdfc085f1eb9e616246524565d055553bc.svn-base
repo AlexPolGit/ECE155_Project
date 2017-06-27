@@ -1,15 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="ca.uwaterloo.ece155_lab2">
+    package="ca.patricklam.sharedpreferencesdemo"
+    android:versionCode="1"
+    android:versionName="1.0" >
+
+    <uses-sdk
+        android:minSdkVersion="8"
+        android:targetSdkVersion="16" />
 
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/ic_accelerometer"
+        android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_accelerometer"
-        android:supportsRtl="true"
-        android:theme="@style/AppTheme">
-        <activity android:name="ca.uwaterloo.ece155_lab4.MainActivity">
+        android:theme="@style/AppTheme" >
+        <activity
+            android:name="ca.patricklam.sharedpreferencesdemo.MainActivity"
+            android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
