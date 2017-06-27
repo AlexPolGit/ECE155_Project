@@ -1,29 +1,38 @@
 package ca.uwaterloo.ece155_lab3;
 
 import android.content.Context;
-import android.os.Debug;
 import android.util.Log;
-import android.widget.ImageView;
 
 import ca.uwaterloo.ece155_lab2.R;
 
 public class GameBlock extends android.support.v7.widget.AppCompatImageView
 {
-    private static final float IMAGE_SCALE = 0.50f;
-    // variables for animation
+    // size scale of the block image
+    private static final float IMAGE_SCALE = 0.55f;
+    // variables for translation/animation
+    private static final float translationDistance = 250;
     private static final float baseVelocity = 30.0f;
     private static final float acceleration = 10.0f;
     private static float velocity;
-    enum state {STARTED, MOVING, STOPPED};
+    //private static final float translationDistance = MainActivity.gameboardUnitWidth;
+
+    // possible motion states of block
+    enum state
+    {
+        STARTED, MOVING, STOPPED
+    }
 
     // block properties
-    private int targetCoordX;
-    private int targetCoordY;
+    private float targetCoordX;
+    private float targetCoordY;
     private state blockState;
-    public state getBlockState() {
+
+    public state getBlockState()
+    {
         return blockState;
     }
-    private int blockOffset = 94;
+
+    //private int blockOffset = 94;
 
     // block properties
     private int myCoordX;
@@ -31,6 +40,7 @@ public class GameBlock extends android.support.v7.widget.AppCompatImageView
     private int xLoc;
     private int yLoc;
 
+    // GameBlock constructor, requires context and (x, y) position
     public GameBlock(Context c, int x, int y)
     {
         super(c);
@@ -42,95 +52,111 @@ public class GameBlock extends android.support.v7.widget.AppCompatImageView
         blockState = state.STOPPED;
         velocity = baseVelocity;
 
-        // set the image view
+        // set the image recourse, size, scale, location, visibility
         this.setImageResource(R.drawable.gameblock);
         this.setScaleX(IMAGE_SCALE);
         this.setScaleY(IMAGE_SCALE);
-        this.setX(myCoordX);
-        this.setY(myCoordY);
+        this.setTranslationX(x);
+        this.setTranslationY(y);
         this.setVisibility(VISIBLE);
     }
 
+    // logic for motion of game block, as well as animation
+    // block is to move either left, right, up or down (if possible)
+    // legal xLoc and yLoc are 0, 1, 2 or 3 (4x4 matrix)
     public boolean move(GameLoopTask.gameDirections dir)
     {
         switch (dir)
         {
+            // right direction logic
             case RIGHT:
             {
                 if (xLoc < 3)
                 {
-                    if (blockState == state.STOPPED)
-                        blockState = state.STARTED;
-                    if (blockState == state.STARTED) {
-                        xLoc++;
-                        targetCoordX = myCoordX + MainActivity.gameboardUnitWidth;
+                    if (blockState == state.STOPPED) blockState = state.STARTED;
+                    if (blockState == state.STARTED)
+                    {
+                        targetCoordX = myCoordX + translationDistance;
                     }
 
                     myCoordX += velocity;
-                    velocity += acceleration;
-                    this.setX(myCoordX);
+                    velocity += acceleration * (1 / (1 + (1 / 5) * (xLoc + 1)));
+                    this.setTranslationX(myCoordX);
                     if (myCoordX >= targetCoordX)
+                    {
                         blockState = state.STOPPED;
+                        xLoc++;
+                    }
                 }
                 break;
             }
+            // left direction logic
             case LEFT:
             {
                 if (xLoc > 0)
                 {
-                    if (blockState == state.STOPPED)
-                        blockState = state.STARTED;
-                    if (blockState == state.STARTED) {
-                        xLoc--;
-                        targetCoordX = myCoordX - MainActivity.gameboardUnitWidth;
+                    if (blockState == state.STOPPED) blockState = state.STARTED;
+                    if (blockState == state.STARTED)
+                    {
+                        targetCoordX = myCoordX - translationDistance;
                     }
 
                     myCoordX -= velocity;
-                    velocity += acceleration;
-                    this.setX(myCoordX);
+                    velocity += acceleration * (1 / (1 + (1 / 5) * (xLoc + 1)));
+                    this.setTranslationX(myCoordX);
                     if (myCoordX <= targetCoordX)
+                    {
                         blockState = state.STOPPED;
+                        xLoc--;
+                    }
                 }
                 break;
             }
+            // up direction logic
             case UP:
             {
                 if (yLoc > 0)
                 {
-                    if (blockState == state.STOPPED)
-                        blockState = state.STARTED;
-                    if (blockState == state.STARTED) {
-                        yLoc--;
-                        targetCoordY = myCoordY - MainActivity.gameboardUnitHeight;
+                    if (blockState == state.STOPPED) blockState = state.STARTED;
+                    if (blockState == state.STARTED)
+                    {
+                        targetCoordY = myCoordY - translationDistance;
                     }
 
                     myCoordY -= velocity;
-                    velocity += acceleration;
-                    this.setY(myCoordY);
+                    velocity += acceleration * (1 / (1 + (1 / 5) * (xLoc + 1)));
+                    this.setTranslationY(myCoordY);
                     if (myCoordY <= targetCoordY)
+                    {
                         blockState = state.STOPPED;
+                        yLoc--;
+                    }
                 }
                 break;
             }
+            // down direction logic
             case DOWN:
             {
                 if (yLoc < 3)
                 {
-                    if (blockState == state.STOPPED)
-                        blockState = state.STARTED;
-                    if (blockState == state.STARTED) {
-                        yLoc++;
-                        targetCoordY = myCoordY + MainActivity.gameboardUnitHeight;
+                    if (blockState == state.STOPPED) blockState = state.STARTED;
+                    if (blockState == state.STARTED)
+                    {
+                        targetCoordY = myCoordY + translationDistance;
                     }
 
                     myCoordY += velocity;
-                    velocity += acceleration;
-                    this.setY(myCoordY);
+                    velocity += acceleration * (1 / (1 + (1 / 5) * (xLoc + 1)));
+                    this.setTranslationY(myCoordY);
                     if (myCoordY >= targetCoordY)
+                    {
                         blockState = state.STOPPED;
+                        yLoc++;
+                    }
                 }
                 break;
             }
+            // other/error logic (should not happen)
             case NO_MOVEMENT:
             default:
             {
@@ -140,17 +166,20 @@ public class GameBlock extends android.support.v7.widget.AppCompatImageView
         }
 
         // block is now in motion after the first iteration of the first tick
-        if (blockState == state.STARTED)
-            blockState = state.MOVING;
+        if (blockState == state.STARTED) blockState = state.MOVING;
 
         Log.d("debug1", String.format("Block Position: (%d, %d)", xLoc, yLoc));
+        Log.d("debug1", "Block State: " + getBlockState().toString());
 
-        if (blockState == state.STOPPED) {
+        if (blockState == state.STOPPED)
+        {
             velocity = baseVelocity;
             targetCoordX = 0;
             targetCoordY = 0;
             return false; // doMove in gamelooptask is then false, so stops moving
-        } else {
+        }
+        else
+        {
             return true; // doMove in gamelooptask is then true so continues moving
         }
     }

@@ -15,18 +15,27 @@ import ca.uwaterloo.ece155_lab2.R;
 
 public class MainActivity extends AppCompatActivity
 {
+    // debug tag
     public final static String debugFilter1 = "debug1";
+
+    // sensor delay (for game)
     public final int SENSOR_DELAY = SensorManager.SENSOR_DELAY_GAME;
 
     TextView text_direction;
     ImageView img_gameboard;
 
+    // density of screen
+    float scale;
+    // width of screen
+    float dpWidth;
+    // size of the gameboard
     public float gameboardWidth;
-    public float gameboardHeight;
-    public static int gameboardUnitWidth;
-    public static int gameboardUnitHeight;
+    //size of one of the 4x4 units in the gameboard
+    public static float gameboardUnitWidth;
+
     public static int[] gameBoardOrigin = new int[2];
 
+    // filter for accelerometer
     static final int field_filter = 10;
 
     // sensor values
@@ -47,12 +56,13 @@ public class MainActivity extends AppCompatActivity
         img_gameboard = (ImageView) findViewById(R.id.gameBoard);
         text_direction = (TextView) findViewById(R.id.text_dir);
 
+        // origin of gameboard
+        scale = getResources().getDisplayMetrics().density;
+        dpWidth = getResources().getDisplayMetrics().widthPixels / getResources().getDisplayMetrics().density;
         img_gameboard.getLocationOnScreen(gameBoardOrigin);
         gameboardWidth = img_gameboard.getLayoutParams().width;
-        gameboardHeight = img_gameboard.getLayoutParams().height;
-        gameboardUnitWidth = (int)(gameboardWidth / 4);
-        gameboardUnitHeight = (int)(gameboardHeight / 4);
-        Log.d("debug1", "Gameboard Height: " + gameboardHeight + ", Unit: " + gameboardUnitHeight);
+        gameboardUnitWidth = ((gameboardWidth / 4) * scale + 0.5f);
+        //gameboardUnitWidth = dpWidth / 1.6f;
         Log.d("debug1", "Gameboard Width: " + gameboardWidth + ", Unit: " + gameboardUnitWidth);
 
         text_direction.setText("No Dir");
@@ -111,11 +121,16 @@ public class MainActivity extends AppCompatActivity
     // method that sets the text related to the sensor readings to the app view
     public void setTextOfDebugTextViews()
     {
-        if (listener.getGesture() == AccelerometerListener.gestures.RIGHT) text_direction.setText(getString(R.string.orientation_right));
-        else if (listener.getGesture() == AccelerometerListener.gestures.LEFT) text_direction.setText(getString(R.string.orientation_left));
-        else if (listener.getGesture() == AccelerometerListener.gestures.UP) text_direction.setText(getString(R.string.orientation_up));
-        else if (listener.getGesture() == AccelerometerListener.gestures.DOWN) text_direction.setText(getString(R.string.orientation_down));
-        else if (listener.getGesture() == AccelerometerListener.gestures.NONE) text_direction.setText(getString(R.string.orientation_none));
+        if (listener.getGesture() == AccelerometerListener.gestures.RIGHT)
+            text_direction.setText(getString(R.string.orientation_right));
+        else if (listener.getGesture() == AccelerometerListener.gestures.LEFT)
+            text_direction.setText(getString(R.string.orientation_left));
+        else if (listener.getGesture() == AccelerometerListener.gestures.UP)
+            text_direction.setText(getString(R.string.orientation_up));
+        else if (listener.getGesture() == AccelerometerListener.gestures.DOWN)
+            text_direction.setText(getString(R.string.orientation_down));
+        else if (listener.getGesture() == AccelerometerListener.gestures.NONE)
+            text_direction.setText(getString(R.string.orientation_none));
         else text_direction.setText(getString(R.string.orientation_error));
     }
 }
