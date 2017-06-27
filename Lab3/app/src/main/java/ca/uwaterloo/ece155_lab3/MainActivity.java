@@ -21,8 +21,8 @@ public class MainActivity extends AppCompatActivity
     // sensor delay (for game)
     public final int SENSOR_DELAY = SensorManager.SENSOR_DELAY_GAME;
 
-    TextView text_direction;
-    ImageView img_gameboard;
+    public static TextView text_direction;
+    public static ImageView img_gameboard;
 
     // density of screen
     float scale;
@@ -58,10 +58,13 @@ public class MainActivity extends AppCompatActivity
 
         // origin of gameboard
         scale = getResources().getDisplayMetrics().density;
+        int pix = getResources().getDisplayMetrics().widthPixels;
         dpWidth = getResources().getDisplayMetrics().widthPixels / getResources().getDisplayMetrics().density;
         img_gameboard.getLocationOnScreen(gameBoardOrigin);
         gameboardWidth = img_gameboard.getLayoutParams().width;
-        gameboardUnitWidth = ((gameboardWidth / 4) * scale + 0.5f);
+        Log.d("debug1", Integer.toString(img_gameboard.getWidth()));
+        //gameboardUnitWidth = img_gameboard.getWidth();
+        //gameboardUnitWidth = ((gameboardWidth / 4) * scale + 200f);
         //gameboardUnitWidth = dpWidth / 1.6f;
         Log.d("debug1", "Gameboard Width: " + gameboardWidth + ", Unit: " + gameboardUnitWidth);
 

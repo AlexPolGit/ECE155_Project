@@ -1,16 +1,19 @@
 package ca.uwaterloo.ece155_lab3;
 
 import android.content.Context;
+import android.support.annotation.IntegerRes;
 import android.util.Log;
 
 import ca.uwaterloo.ece155_lab2.R;
 
 public class GameBlock extends android.support.v7.widget.AppCompatImageView
 {
+    private Context context;
+
     // size scale of the block image
     private static final float IMAGE_SCALE = 0.55f;
     // variables for translation/animation
-    private static final float translationDistance = 250;
+    private static float translationDistance = MainActivity.gameboardUnitWidth;
     private static final float baseVelocity = 30.0f;
     private static final float acceleration = 10.0f;
     private static float velocity;
@@ -44,6 +47,7 @@ public class GameBlock extends android.support.v7.widget.AppCompatImageView
     public GameBlock(Context c, int x, int y)
     {
         super(c);
+        context = c;
         myCoordX = x;
         myCoordY = y;
         xLoc = 0;
@@ -66,6 +70,8 @@ public class GameBlock extends android.support.v7.widget.AppCompatImageView
     // legal xLoc and yLoc are 0, 1, 2 or 3 (4x4 matrix)
     public boolean move(GameLoopTask.gameDirections dir)
     {
+        translationDistance = MainActivity.img_gameboard.getWidth() / 4;
+        Log.d("debug1", "WIDTH TO MOVE: " + Integer.toString(MainActivity.img_gameboard.getWidth() / 4));
         switch (dir)
         {
             // right direction logic
@@ -79,8 +85,15 @@ public class GameBlock extends android.support.v7.widget.AppCompatImageView
                         targetCoordX = myCoordX + translationDistance;
                     }
 
-                    myCoordX += velocity;
-                    velocity += acceleration * (1 / (1 + (1 / 5) * (xLoc + 1)));
+                    if (myCoordX + velocity < targetCoordX)
+                    {
+                        myCoordX += velocity;
+                    }
+                    else
+                    {
+                        myCoordX = (int) targetCoordX;
+                    }
+                    velocity += acceleration;
                     this.setTranslationX(myCoordX);
                     if (myCoordX >= targetCoordX)
                     {
@@ -101,8 +114,15 @@ public class GameBlock extends android.support.v7.widget.AppCompatImageView
                         targetCoordX = myCoordX - translationDistance;
                     }
 
-                    myCoordX -= velocity;
-                    velocity += acceleration * (1 / (1 + (1 / 5) * (xLoc + 1)));
+                    if (myCoordX - velocity > targetCoordX)
+                    {
+                        myCoordX -= velocity;
+                    }
+                    else
+                    {
+                        myCoordX = (int) targetCoordX;
+                    }
+                    velocity += acceleration;
                     this.setTranslationX(myCoordX);
                     if (myCoordX <= targetCoordX)
                     {
@@ -123,8 +143,15 @@ public class GameBlock extends android.support.v7.widget.AppCompatImageView
                         targetCoordY = myCoordY - translationDistance;
                     }
 
-                    myCoordY -= velocity;
-                    velocity += acceleration * (1 / (1 + (1 / 5) * (xLoc + 1)));
+                    if (myCoordY - velocity > targetCoordY)
+                    {
+                        myCoordY -= velocity;
+                    }
+                    else
+                    {
+                        myCoordY = (int) targetCoordY;
+                    }
+                    velocity += acceleration;
                     this.setTranslationY(myCoordY);
                     if (myCoordY <= targetCoordY)
                     {
@@ -145,8 +172,15 @@ public class GameBlock extends android.support.v7.widget.AppCompatImageView
                         targetCoordY = myCoordY + translationDistance;
                     }
 
-                    myCoordY += velocity;
-                    velocity += acceleration * (1 / (1 + (1 / 5) * (xLoc + 1)));
+                    if (myCoordY + velocity < targetCoordY)
+                    {
+                        myCoordY += velocity;
+                    }
+                    else
+                    {
+                        myCoordY = (int) targetCoordY;
+                    }
+                    velocity += acceleration;
                     this.setTranslationY(myCoordY);
                     if (myCoordY >= targetCoordY)
                     {
