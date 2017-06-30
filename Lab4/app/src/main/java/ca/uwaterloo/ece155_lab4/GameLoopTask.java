@@ -7,6 +7,8 @@ import android.widget.RelativeLayout;
 
 import java.util.TimerTask;
 
+import ca.uwaterloo.ece155_lab4.utils.GameManager;
+
 public class GameLoopTask extends TimerTask
 {
     // context for which to do logic
@@ -15,11 +17,11 @@ public class GameLoopTask extends TimerTask
     private RelativeLayout myRL;
 
     // the gameblock object
-    private GameBlock gameBlock;
+    private GameBlock[][] gameBlocks;
 
-    public GameBlock getGameBlock()
+    public void setGameBlocks()
     {
-        return gameBlock;
+        gameBlocks = GameManager.board;
     }
 
     // is moving allowed?
@@ -45,10 +47,6 @@ public class GameLoopTask extends TimerTask
         myActivity = a;
         myContext = c;
         myRL = r;
-        gameBlock = new GameBlock(    c,
-                                      MainActivity.gameBoardOrigin[0] - 70,
-                                      MainActivity.gameBoardOrigin[0] - 70);
-        myRL.addView(gameBlock);
     }
 
     // called when the block is allowed to move
@@ -70,7 +68,7 @@ public class GameLoopTask extends TimerTask
                         upTime += 50;
                         if (doMove)
                         {
-                            doMove = gameBlock.move(gameDirection);
+                            //doMove = gameBlock.move(gameDirection);
                         }
                         if (upTime % 1000 == 0)
                         {

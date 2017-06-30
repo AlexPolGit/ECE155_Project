@@ -2,6 +2,8 @@ package ca.uwaterloo.ece155_lab4;
 
 import android.util.Log;
 
+import ca.uwaterloo.ece155_lab4.utils.GameManager;
+
 public class SignalProcessor
 {
     GameLoopTask gameLoopTask;
@@ -20,7 +22,7 @@ public class SignalProcessor
     // FSM for X axis (right-left)
     public void fsmX(float reading)
     {
-        if (gameLoopTask.getGameBlock().getBlockState() == GameBlock.state.STOPPED)
+        if (GameManager.testBlock.getBlockState() == GameBlock.state.STOPPED)
         {
             switch (AccelerometerListener.currentState)
             {
@@ -105,7 +107,7 @@ public class SignalProcessor
     // FSM for Z axis (up-down)
     public void fsmZ(float reading)
     {
-        if (gameLoopTask.getGameBlock().getBlockState() == GameBlock.state.STOPPED)
+        if (GameManager.testBlock.getBlockState() == GameBlock.state.STOPPED)
         {
             switch (AccelerometerListener.currentState)
             {

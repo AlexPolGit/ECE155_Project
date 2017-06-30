@@ -42,6 +42,7 @@ public class GameBlock extends android.support.v7.widget.AppCompatImageView
     private int myCoordY;
     private int xLoc;
     private int yLoc;
+    private int value;
 
     // GameBlock constructor, requires context and (x, y) position
     public GameBlock(Context c, int x, int y)
@@ -52,6 +53,7 @@ public class GameBlock extends android.support.v7.widget.AppCompatImageView
         myCoordY = y;
         xLoc = 0;
         yLoc = 0;
+        value = 2;
 
         blockState = state.STOPPED;
         velocity = baseVelocity;
@@ -63,6 +65,36 @@ public class GameBlock extends android.support.v7.widget.AppCompatImageView
         this.setTranslationX(x);
         this.setTranslationY(y);
         this.setVisibility(VISIBLE);
+    }
+
+    public int getGridX()
+    {
+        return xLoc;
+    }
+
+    public int getGridY()
+    {
+        return yLoc;
+    }
+
+    public void setGridX(int x)
+    {
+        xLoc = x;
+    }
+
+    public void setGridY(int y)
+    {
+        yLoc = y;
+    }
+
+    public int getValue()
+    {
+        return value;
+    }
+
+    public void setValue(int val)
+    {
+        value = val;
     }
 
     // logic for motion of game block, as well as animation

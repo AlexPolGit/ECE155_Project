@@ -10,8 +10,10 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.util.Timer;
+import java.util.TimerTask;
 
 import ca.uwaterloo.ece155_lab2.R;
+import ca.uwaterloo.ece155_lab4.utils.GameManager;
 
 public class MainActivity extends AppCompatActivity
 {
@@ -43,6 +45,8 @@ public class MainActivity extends AppCompatActivity
     AccelerometerListener listener;
     Sensor accelerometer;
 
+    public static TextView testGrid;
+
     // runs on initial creation of app
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -51,19 +55,17 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         Log.d(debugFilter1, "APP CREATED.");
 
+        testGrid = (TextView) findViewById(R.id.gridTest);
+        final GameManager gm = new GameManager(getApplicationContext());
+
+        testGrid.setText(gm.getStringOfBoardValues());
+
         // setup the board
         RelativeLayout relativeLayout = (RelativeLayout) findViewById(R.id.relativeLayout);
         img_gameboard = (ImageView) findViewById(R.id.gameBoard);
-        text_direction = (TextView) findViewById(R.id.text_dir);
 
         // origin of gameboard
-        scale = getResources().getDisplayMetrics().density;
-        int pix = getResources().getDisplayMetrics().widthPixels;
-        dpWidth = getResources().getDisplayMetrics().widthPixels / getResources().getDisplayMetrics().density;
         img_gameboard.getLocationOnScreen(gameBoardOrigin);
-        gameboardWidth = img_gameboard.getLayoutParams().width;
-
-        text_direction.setText("No Dir");
 
         Timer gameLoop = new Timer();
         GameLoopTask myGameLoop = new GameLoopTask(this, getApplicationContext(), relativeLayout);
@@ -119,16 +121,6 @@ public class MainActivity extends AppCompatActivity
     // method that sets the text related to the sensor readings to the app view
     public void setTextOfDebugTextViews()
     {
-        if (listener.getGesture() == AccelerometerListener.gestures.RIGHT)
-            text_direction.setText(getString(R.string.orientation_right));
-        else if (listener.getGesture() == AccelerometerListener.gestures.LEFT)
-            text_direction.setText(getString(R.string.orientation_left));
-        else if (listener.getGesture() == AccelerometerListener.gestures.UP)
-            text_direction.setText(getString(R.string.orientation_up));
-        else if (listener.getGesture() == AccelerometerListener.gestures.DOWN)
-            text_direction.setText(getString(R.string.orientation_down));
-        else if (listener.getGesture() == AccelerometerListener.gestures.NONE)
-            text_direction.setText(getString(R.string.orientation_none));
-        else text_direction.setText(getString(R.string.orientation_error));
+
     }
 }
