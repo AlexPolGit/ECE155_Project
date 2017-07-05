@@ -5,13 +5,14 @@ import android.support.annotation.IntegerRes;
 import android.util.Log;
 
 import ca.uwaterloo.ece155_lab2.R;
+import ca.uwaterloo.ece155_lab4.utils.Direction;
 
 public class GameBlock extends android.support.v7.widget.AppCompatImageView
 {
     private Context context;
 
     // size scale of the block image
-    private static final float IMAGE_SCALE = 0.55f;
+    private static final float IMAGE_SCALE = 0.30f;
     // variables for translation/animation
     private static float translationDistance = MainActivity.gameboardUnitWidth;
     private static final float baseVelocity = 30.0f;
@@ -44,8 +45,10 @@ public class GameBlock extends android.support.v7.widget.AppCompatImageView
     private int yLoc;
     private int value;
 
+    public boolean isMoving = false;
+
     // GameBlock constructor, requires context and (x, y) position
-    public GameBlock(Context c, int x, int y)
+    public GameBlock(Context c, int x, int y, int v)
     {
         super(c);
         context = c;
@@ -53,18 +56,36 @@ public class GameBlock extends android.support.v7.widget.AppCompatImageView
         myCoordY = y;
         xLoc = 0;
         yLoc = 0;
-        value = 2;
+        value = v;
 
         blockState = state.STOPPED;
         velocity = baseVelocity;
 
         // set the image recourse, size, scale, location, visibility
-        this.setImageResource(R.drawable.gameblock);
+        setResourceByValue();
         this.setScaleX(IMAGE_SCALE);
         this.setScaleY(IMAGE_SCALE);
         this.setTranslationX(x);
         this.setTranslationY(y);
         this.setVisibility(VISIBLE);
+
+        MainActivity.relativeLayout.addView(this);
+    }
+
+    public void setResourceByValue()
+    {
+        switch (value)
+        {
+            case 2: this.setImageResource(R.drawable.block_2); break;
+            case 4: this.setImageResource(R.drawable.block_4); break;
+            case 8: this.setImageResource(R.drawable.block_8); break;
+            case 16: this.setImageResource(R.drawable.block_16); break;
+            case 32: this.setImageResource(R.drawable.block_32); break;
+            case 64: this.setImageResource(R.drawable.block_64); break;
+            case 128: this.setImageResource(R.drawable.block_128); break;
+            case 256: this.setImageResource(R.drawable.block_256); break;
+            default: this.setImageResource(R.drawable.block_2); break;
+        }
     }
 
     public int getGridX()
@@ -92,16 +113,19 @@ public class GameBlock extends android.support.v7.widget.AppCompatImageView
         return value;
     }
 
-    public void setValue(int val)
+    public synchronized void setValue(int val)
     {
         value = val;
+        setResourceByValue();
     }
 
     // logic for motion of game block, as well as animation
     // block is to move either left, right, up or down (if possible)
     // legal xLoc and yLoc are 0, 1, 2 or 3 (4x4 matrix)
-    public boolean move(GameLoopTask.gameDirections dir)
+    public synchronized boolean move(Direction dir, int x, int y)
     {
+        isMoving = true;
+
         translationDistance = MainActivity.img_gameboard.getWidth() / 4;
         //Log.d("debug1", "WIDTH TO MOVE: " + Integer.toString(MainActivity.img_gameboard.getWidth() / 4));
         switch (dir)
@@ -242,10 +266,12 @@ public class GameBlock extends android.support.v7.widget.AppCompatImageView
             velocity = baseVelocity;
             targetCoordX = 0;
             targetCoordY = 0;
+            isMoving = false;
             return false; // doMove in gamelooptask is then false, so stops moving
         }
         else
         {
+            isMoving = true;
             return true; // doMove in gamelooptask is then true so continues moving
         }
     }

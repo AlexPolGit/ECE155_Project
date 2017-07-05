@@ -5,15 +5,15 @@ import android.hardware.SensorManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.util.Timer;
-import java.util.TimerTask;
 
 import ca.uwaterloo.ece155_lab2.R;
-import ca.uwaterloo.ece155_lab4.utils.GameManager;
 
 public class MainActivity extends AppCompatActivity
 {
@@ -45,6 +45,10 @@ public class MainActivity extends AppCompatActivity
     AccelerometerListener listener;
     Sensor accelerometer;
 
+    public static Button btnReset;
+
+    public static RelativeLayout relativeLayout;
+
     public static TextView testGrid;
 
     // runs on initial creation of app
@@ -56,14 +60,28 @@ public class MainActivity extends AppCompatActivity
         Log.d(debugFilter1, "APP CREATED.");
 
         testGrid = (TextView) findViewById(R.id.gridTest);
-        final GameManager gm = new GameManager(getApplicationContext());
+        btnReset = (Button) findViewById(R.id.btnReset);
 
-        testGrid.setText(gm.getStringOfBoardValues());
+        //testGrid.setText(gm.getStringOfBoardValues());
 
         // setup the board
-        RelativeLayout relativeLayout = (RelativeLayout) findViewById(R.id.relativeLayout);
+        relativeLayout = (RelativeLayout) findViewById(R.id.relativeLayout);
         img_gameboard = (ImageView) findViewById(R.id.gameBoard);
 
+        setUp();
+
+        btnReset.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                setUp();
+            }
+        });
+    }
+
+    protected void setUp()
+    {
         // origin of gameboard
         img_gameboard.getLocationOnScreen(gameBoardOrigin);
 

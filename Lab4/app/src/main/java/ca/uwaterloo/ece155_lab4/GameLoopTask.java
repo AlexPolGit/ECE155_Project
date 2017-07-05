@@ -7,7 +7,7 @@ import android.widget.RelativeLayout;
 
 import java.util.TimerTask;
 
-import ca.uwaterloo.ece155_lab4.utils.GameManager;
+import ca.uwaterloo.ece155_lab4.utils.Direction;
 
 public class GameLoopTask extends TimerTask
 {
@@ -15,26 +15,23 @@ public class GameLoopTask extends TimerTask
     private Activity myActivity;
     private Context myContext;
     private RelativeLayout myRL;
+    private GameManager gameManager;
 
     // the gameblock object
     private GameBlock[][] gameBlocks;
 
+    /*
     public void setGameBlocks()
     {
         gameBlocks = GameManager.board;
     }
+    */
 
     // is moving allowed?
     private boolean doMove = false;
 
-    // possible motion directions
-    enum gameDirections
-    {
-        UP, DOWN, LEFT, RIGHT, NO_MOVEMENT
-    }
-
     // last motion direction
-    gameDirections gameDirection = gameDirections.NO_MOVEMENT;
+    Direction gameDirection = Direction.NO_MOVEMENT;
 
     // uptime of program in ms (for debugging)
     private int upTime = 0;
@@ -47,13 +44,19 @@ public class GameLoopTask extends TimerTask
         myActivity = a;
         myContext = c;
         myRL = r;
+        gameManager = new GameManager(myContext);
     }
 
     // called when the block is allowed to move
-    public void setDirection(gameDirections dir)
+    public void setDirection(Direction dir)
     {
         gameDirection = dir;
         doMove = true;
+    }
+
+    public GameManager getGameManager()
+    {
+        return gameManager;
     }
 
     // runs ever 50ms (20fps), telling block to move when needed
@@ -68,12 +71,16 @@ public class GameLoopTask extends TimerTask
                         upTime += 50;
                         if (doMove)
                         {
-                            //doMove = gameBlock.move(gameDirection);
+                            if (!gameManager.gg && gameManager.motionIsDone)
+                            {
+                                gameManager.slideGrid(gameDirection);
+                            }
                         }
                         if (upTime % 1000 == 0)
                         {
                             Log.d("debug1", String.format("Program uptime: %d seconds", (upTime / 1000)));
                             Log.d("debug1", "DIR:" + gameDirection.toString());
+                            gameManager.tickTime(1.0f);
                         }
                     }
                 }

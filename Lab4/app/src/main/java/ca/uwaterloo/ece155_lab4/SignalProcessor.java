@@ -2,7 +2,7 @@ package ca.uwaterloo.ece155_lab4;
 
 import android.util.Log;
 
-import ca.uwaterloo.ece155_lab4.utils.GameManager;
+import ca.uwaterloo.ece155_lab4.utils.Direction;
 
 public class SignalProcessor
 {
@@ -22,7 +22,9 @@ public class SignalProcessor
     // FSM for X axis (right-left)
     public void fsmX(float reading)
     {
-        if (GameManager.testBlock.getBlockState() == GameBlock.state.STOPPED)
+        boolean doFSM = true;
+
+        if (gameLoopTask.getGameManager().motionIsDone)
         {
             switch (AccelerometerListener.currentState)
             {
@@ -53,7 +55,7 @@ public class SignalProcessor
                         AccelerometerListener.currentState = AccelerometerListener.states.WAIT;
                         cX = timeOutX;
                         AccelerometerListener.isSafe = false;
-                        gameLoopTask.setDirection(GameLoopTask.gameDirections.RIGHT);
+                        gameLoopTask.setDirection(Direction.RIGHT);
 
                         Log.d("debug1", "RIGHT");
                     }
@@ -78,7 +80,7 @@ public class SignalProcessor
                         AccelerometerListener.currentState = AccelerometerListener.states.WAIT;
                         cX = timeOutX;
                         AccelerometerListener.isSafe = false;
-                        gameLoopTask.setDirection(GameLoopTask.gameDirections.LEFT);
+                        gameLoopTask.setDirection(Direction.LEFT);
 
                         Log.d("debug1", "LEFT");
                     }
@@ -107,7 +109,7 @@ public class SignalProcessor
     // FSM for Z axis (up-down)
     public void fsmZ(float reading)
     {
-        if (GameManager.testBlock.getBlockState() == GameBlock.state.STOPPED)
+        if (gameLoopTask.getGameManager().motionIsDone)
         {
             switch (AccelerometerListener.currentState)
             {
@@ -138,7 +140,7 @@ public class SignalProcessor
                         AccelerometerListener.currentState = AccelerometerListener.states.WAIT;
                         cZ = timeOutZ;
                         AccelerometerListener.isSafe = false;
-                        gameLoopTask.setDirection(GameLoopTask.gameDirections.UP);
+                        gameLoopTask.setDirection(Direction.UP);
 
                         Log.d("debug1", "UP");
                     }
@@ -163,7 +165,7 @@ public class SignalProcessor
                         AccelerometerListener.currentState = AccelerometerListener.states.WAIT;
                         cZ = timeOutZ;
                         AccelerometerListener.isSafe = false;
-                        gameLoopTask.setDirection(GameLoopTask.gameDirections.DOWN);
+                        gameLoopTask.setDirection(Direction.DOWN);
 
                         Log.d("debug1", "DOWN");
                     }

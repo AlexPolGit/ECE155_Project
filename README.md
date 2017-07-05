@@ -9,3 +9,6 @@
 
 ## Lab 3
 * Building basic game objects based on previous labs; to be used for lab 4.
+
+## Lab 4
+* The full 2048 game!
