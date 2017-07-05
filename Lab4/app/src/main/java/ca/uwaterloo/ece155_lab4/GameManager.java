@@ -48,6 +48,7 @@ public class GameManager
 
         newRandomBlock(2);
         setGridString();
+        MainActivity.testGrid.setText(gridString);
     }
 
     private synchronized void slide(int group, Direction dir)
@@ -259,7 +260,7 @@ public class GameManager
 
             takenScan();
 
-            Log.d("debug1", String.format("Making new block at (%d, %d) or value %d!", x, y, r));
+            Log.d("debug1", String.format("Making new block at (%d, %d) of value %d!", x, y, r));
             addGameBlock(x, y, r);
         }
     }
@@ -374,6 +375,15 @@ public class GameManager
         return (s >= 0) ? s : 0;
     }
 
+    public  void wipeList()
+    {
+        for (GameBlock g: blocks)
+        {
+            g.removeFromRL();
+        }
+        blocks = new ArrayList<>();
+    }
+
     private void addGameBlock(int x, int y, int val)
     {
         blocks.add(new GameBlock(context, x, y, val));
@@ -395,6 +405,7 @@ public class GameManager
 
     private GameBlock getGameBlock(int x, int y)
     {
+        Log.d("debug1", String.format("Trying to get block (%d, %d)", x, y));
         for (GameBlock g : blocks)
         {
             if (g.getGridX() == x && g.getGridY() == y)

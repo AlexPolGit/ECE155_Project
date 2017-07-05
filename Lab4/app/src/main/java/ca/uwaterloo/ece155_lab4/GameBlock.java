@@ -39,8 +39,8 @@ public class GameBlock extends android.support.v7.widget.AppCompatImageView
     //private int blockOffset = 94;
 
     // block properties
-    private int myCoordX;
-    private int myCoordY;
+    private float myCoordX;
+    private float myCoordY;
     private int xLoc;
     private int yLoc;
     private int value;
@@ -52,10 +52,11 @@ public class GameBlock extends android.support.v7.widget.AppCompatImageView
     {
         super(c);
         context = c;
-        myCoordX = x;
-        myCoordY = y;
-        xLoc = 0;
-        yLoc = 0;
+        // TODO: make this proper, not some constants
+        myCoordX = -220 + 150 * y * 1.5f;
+        myCoordY = -220 + 150 * x * 1.5f;
+        xLoc = x;
+        yLoc = y;
         value = v;
 
         blockState = state.STOPPED;
@@ -65,8 +66,8 @@ public class GameBlock extends android.support.v7.widget.AppCompatImageView
         setResourceByValue();
         this.setScaleX(IMAGE_SCALE);
         this.setScaleY(IMAGE_SCALE);
-        this.setTranslationX(x);
-        this.setTranslationY(y);
+        this.setTranslationX(myCoordX);
+        this.setTranslationY(myCoordY);
         this.setVisibility(VISIBLE);
 
         MainActivity.relativeLayout.addView(this);
@@ -86,6 +87,11 @@ public class GameBlock extends android.support.v7.widget.AppCompatImageView
             case 256: this.setImageResource(R.drawable.block_256); break;
             default: this.setImageResource(R.drawable.block_2); break;
         }
+    }
+
+    public void removeFromRL()
+    {
+        MainActivity.relativeLayout.removeView(this);
     }
 
     public int getGridX()

@@ -5,6 +5,7 @@ import android.content.Context;
 import android.util.Log;
 import android.widget.RelativeLayout;
 
+import java.util.Timer;
 import java.util.TimerTask;
 
 import ca.uwaterloo.ece155_lab4.utils.Direction;
@@ -45,6 +46,22 @@ public class GameLoopTask extends TimerTask
         myContext = c;
         myRL = r;
         gameManager = new GameManager(myContext);
+
+        Timer gameTime = new Timer();
+        TimerTask countTime = new TimerTask()
+        {
+            @Override
+            public void run()
+            {
+                gameManager.tickTime(1.0f);
+            }
+        };
+        gameTime.schedule(countTime, 1000, 1000);
+    }
+
+    public void resetGame()
+    {
+        gameManager.wipeList();
     }
 
     // called when the block is allowed to move
@@ -76,12 +93,14 @@ public class GameLoopTask extends TimerTask
                                 gameManager.slideGrid(gameDirection);
                             }
                         }
+                        /*
                         if (upTime % 1000 == 0)
                         {
                             Log.d("debug1", String.format("Program uptime: %d seconds", (upTime / 1000)));
                             Log.d("debug1", "DIR:" + gameDirection.toString());
                             gameManager.tickTime(1.0f);
                         }
+                        */
                     }
                 }
         );

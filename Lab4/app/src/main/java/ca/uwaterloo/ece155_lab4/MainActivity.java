@@ -49,6 +49,8 @@ public class MainActivity extends AppCompatActivity
 
     public static RelativeLayout relativeLayout;
 
+    GameLoopTask myGameLoop;
+
     public static TextView testGrid;
 
     // runs on initial creation of app
@@ -75,6 +77,8 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onClick(View v)
             {
+                Log.d("debug1", "RESET!");
+                myGameLoop.resetGame();
                 setUp();
             }
         });
@@ -86,7 +90,7 @@ public class MainActivity extends AppCompatActivity
         img_gameboard.getLocationOnScreen(gameBoardOrigin);
 
         Timer gameLoop = new Timer();
-        GameLoopTask myGameLoop = new GameLoopTask(this, getApplicationContext(), relativeLayout);
+        myGameLoop = new GameLoopTask(this, getApplicationContext(), relativeLayout);
         gameLoop.schedule(myGameLoop, 50, 50);
 
         // initialize the sensor listener and managers
