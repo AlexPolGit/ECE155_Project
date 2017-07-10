@@ -32,7 +32,7 @@ public class GameLoopTask extends TimerTask
     private boolean doMove = false;
 
     // last motion direction
-    Direction gameDirection = Direction.NO_MOVEMENT;
+    Direction lastGameDirection = Direction.NO_MOVEMENT;
 
     // uptime of program in ms (for debugging)
     private int upTime = 0;
@@ -65,10 +65,15 @@ public class GameLoopTask extends TimerTask
     }
 
     // called when the block is allowed to move
-    public void setDirection(Direction dir)
+    public void doMove(Direction dir)
     {
-        gameDirection = dir;
-        doMove = true;
+        lastGameDirection = dir;
+        MainActivity.text_direction.setText(dir.toString());
+
+        if (!gameManager.gg && gameManager.motionIsDone)
+        {
+            gameManager.slideGrid(lastGameDirection);
+        }
     }
 
     public GameManager getGameManager()
@@ -86,13 +91,6 @@ public class GameLoopTask extends TimerTask
                     public void run()
                     {
                         upTime += 50;
-                        if (doMove)
-                        {
-                            if (!gameManager.gg && gameManager.motionIsDone)
-                            {
-                                gameManager.slideGrid(gameDirection);
-                            }
-                        }
                         /*
                         if (upTime % 1000 == 0)
                         {

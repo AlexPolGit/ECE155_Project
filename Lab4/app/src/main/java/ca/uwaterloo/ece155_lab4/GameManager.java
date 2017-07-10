@@ -4,8 +4,9 @@ import android.content.Context;
 import android.util.Log;
 
 import java.util.ArrayList;
+import java.util.Timer;
+import java.util.TimerTask;
 
-import ca.uwaterloo.ece155_lab4.GameBlock;
 import ca.uwaterloo.ece155_lab4.utils.Direction;
 
 public class GameManager
@@ -23,6 +24,8 @@ public class GameManager
     private boolean taken[][] = new boolean[4][4];
 
     private ArrayList<GameBlock> blocks;
+
+    private boolean ret = false;
 
     public boolean motionIsDone = true;
     public boolean gg = false;
@@ -51,7 +54,7 @@ public class GameManager
         MainActivity.testGrid.setText(gridString);
     }
 
-    private synchronized void slide(int group, Direction dir)
+    private void slide(int group, Direction dir)
     {
         boolean hasSlid = false;
         switch (dir)
@@ -67,26 +70,12 @@ public class GameManager
                             grid[group][i+1] *= 2;
                             grid[group][i] = 0;
                             hasSlid = true;
-
-                            GameBlock temp = getGameBlock(group, i);
-                            temp.move(Direction.RIGHT, group, i+1);
-                            while (temp.isMoving) {}
-                            removeGameBlock(group, i);
-                            temp = getGameBlock(group, i+1);
-                            temp.setValue(grid[group][i+1]);
                         }
                         else if (grid[group][i+1] == 0)
                         {
                             grid[group][i+1] = grid[group][i];
                             grid[group][i] = 0;
                             hasSlid = true;
-
-                            GameBlock temp = getGameBlock(group, i);
-                            temp.move(Direction.RIGHT, group, i+1);
-                            while (temp.isMoving) {}
-                            removeGameBlock(group, i);
-                            temp = getGameBlock(group, i+1);
-                            temp.setValue(grid[group][i+1]);
                         }
                     }
                 }
@@ -103,26 +92,12 @@ public class GameManager
                             grid[group][i-1] *= 2;
                             grid[group][i] = 0;
                             hasSlid = true;
-
-                            GameBlock temp = getGameBlock(group, i);
-                            temp.move(Direction.LEFT, group, i-1);
-                            while (temp.isMoving) {}
-                            removeGameBlock(group, i);
-                            temp = getGameBlock(group, i-1);
-                            temp.setValue(grid[group][i-1]);
                         }
                         else if (grid[group][i-1] == 0)
                         {
                             grid[group][i-1] = grid[group][i];
                             grid[group][i] = 0;
                             hasSlid = true;
-
-                            GameBlock temp = getGameBlock(group, i);
-                            temp.move(Direction.LEFT, group, i-1);
-                            while (temp.isMoving) {}
-                            removeGameBlock(group, i);
-                            temp = getGameBlock(group, i-1);
-                            temp.setValue(grid[group][i-1]);
                         }
                     }
                 }
@@ -139,26 +114,12 @@ public class GameManager
                             grid[i + 1][group] *= 2;
                             grid[i][group] = 0;
                             hasSlid = true;
-
-                            GameBlock temp = getGameBlock(i, group);
-                            temp.move(Direction.DOWN, i+1, group);
-                            while (temp.isMoving) {}
-                            removeGameBlock(i, group);
-                            temp = getGameBlock(i+1, group);
-                            temp.setValue(grid[i+1][group]);
                         }
                         else if (grid[i + 1][group] == 0)
                         {
                             grid[i + 1][group] = grid[i][group];
                             grid[i][group] = 0;
                             hasSlid = true;
-
-                            GameBlock temp = getGameBlock(i, group);
-                            temp.move(Direction.DOWN, i+1, group);
-                            while (temp.isMoving) {}
-                            removeGameBlock(i, group);
-                            temp = getGameBlock(i+1, group);
-                            temp.setValue(grid[i+1][group]);
                         }
                     }
                 }
@@ -175,26 +136,12 @@ public class GameManager
                             grid[i - 1][group] *= 2;
                             grid[i][group] = 0;
                             hasSlid = true;
-
-                            GameBlock temp = getGameBlock(i, group);
-                            temp.move(Direction.UP, i-1, group);
-                            while (temp.isMoving) {}
-                            removeGameBlock(i, group);
-                            temp = getGameBlock(i-1, group);
-                            temp.setValue(grid[i-1][group]);
                         }
                         else if (grid[i - 1][group] == 0)
                         {
                             grid[i - 1][group] = grid[i][group];
                             grid[i][group] = 0;
                             hasSlid = true;
-
-                            GameBlock temp = getGameBlock(i, group);
-                            temp.move(Direction.UP, i-1, group);
-                            while (temp.isMoving) {}
-                            removeGameBlock(i, group);
-                            temp = getGameBlock(i-1, group);
-                            temp.setValue(grid[i-1][group]);
                         }
                     }
                 }
@@ -202,7 +149,7 @@ public class GameManager
             }
             default:
             {
-                Log.d("debug1", "CANT SLIDE ROW UP OR DOWN");
+                Log.d("debug", "CANT SLIDE ROW UP OR DOWN");
                 break;
             }
         }
@@ -261,7 +208,7 @@ public class GameManager
             takenScan();
 
             Log.d("debug1", String.format("Making new block at (%d, %d) of value %d!", x, y, r));
-            addGameBlock(x, y, r);
+            //addGameBlock(x, y, r);
         }
     }
 
@@ -375,12 +322,8 @@ public class GameManager
         return (s >= 0) ? s : 0;
     }
 
-    public  void wipeList()
+    public void wipeList()
     {
-        for (GameBlock g: blocks)
-        {
-            g.removeFromRL();
-        }
         blocks = new ArrayList<>();
     }
 
@@ -388,6 +331,12 @@ public class GameManager
     {
         blocks.add(new GameBlock(context, x, y, val));
         Log.d("debug1", String.format("Gameblock added at (%d, %d)!", x, y));
+        String s = "List of Blocks: ";
+        for (GameBlock g : blocks)
+        {
+            s += String.format("(%d, %d), ", g.getGridX(), g.getGridY());
+        }
+        Log.d("debug1", s);
     }
 
     private void removeGameBlock(int x, int y)

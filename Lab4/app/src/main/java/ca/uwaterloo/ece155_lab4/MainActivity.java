@@ -63,6 +63,7 @@ public class MainActivity extends AppCompatActivity
 
         testGrid = (TextView) findViewById(R.id.gridTest);
         btnReset = (Button) findViewById(R.id.btnReset);
+        text_direction = (TextView) findViewById(R.id.txtDir);
 
         //testGrid.setText(gm.getStringOfBoardValues());
 

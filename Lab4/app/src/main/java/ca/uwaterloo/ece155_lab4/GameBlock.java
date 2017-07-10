@@ -3,6 +3,7 @@ package ca.uwaterloo.ece155_lab4;
 import android.content.Context;
 import android.support.annotation.IntegerRes;
 import android.util.Log;
+import android.view.View;
 
 import ca.uwaterloo.ece155_lab2.R;
 import ca.uwaterloo.ece155_lab4.utils.Direction;
@@ -91,6 +92,7 @@ public class GameBlock extends android.support.v7.widget.AppCompatImageView
 
     public void removeFromRL()
     {
+        this.setVisibility(View.INVISIBLE);
         MainActivity.relativeLayout.removeView(this);
     }
 
