@@ -91,6 +91,10 @@ public class GameLoopTask extends TimerTask
                     public void run()
                     {
                         upTime += 50;
+                        if (!gameManager.gg && gameManager.motionIsDone)
+                        {
+                            gameManager.slideGrid(lastGameDirection);
+                        }
                         /*
                         if (upTime % 1000 == 0)
                         {

@@ -37,6 +37,7 @@ public class GameManager
         setUpEverything();
     }
 
+    // initialize the board OnStartup
     private void setUpEverything()
     {
         Log.d("debug1", "Setting up game.");
@@ -48,12 +49,13 @@ public class GameManager
                 grid[i][j] = 0;
             }
         }
-
+        // create 2 initial blocks on the grid
         newRandomBlock(2);
         setGridString();
         MainActivity.testGrid.setText(gridString);
     }
 
+    // handles block merging when blocks slide in a direction
     private void slide(int group, Direction dir)
     {
         boolean hasSlid = false;
@@ -187,6 +189,7 @@ public class GameManager
         }
     }
 
+    // creates a block of randomly generated value and position
     private synchronized void newRandomBlock(int numberToAdd)
     {
         int x = 0;
@@ -208,10 +211,11 @@ public class GameManager
             takenScan();
 
             Log.d("debug1", String.format("Making new block at (%d, %d) of value %d!", x, y, r));
-            //addGameBlock(x, y, r);
+            addGameBlock(x, y, r);
         }
     }
 
+    // Updates the board to check which cells are occupied by blocks
     private void takenScan()
     {
         int c = 0;
@@ -230,6 +234,7 @@ public class GameManager
         boardIsFull = (c == 16) ? true : false;
     }
 
+    // check if the user has lost, i.e. no more blocks can shift in any direction
     private boolean loseCondition()
     {
         for (int i = 0; i < 4; i++)
@@ -265,6 +270,7 @@ public class GameManager
         return true;
     }
 
+    // check if the user has won, i.e. got a block with value 256
     private boolean winCondition()
     {
         for (int i = 0; i < 4; i++)
@@ -281,6 +287,7 @@ public class GameManager
         return false;
     }
 
+    // generates a random value either 2 or 4 for each new block created
     private int rand2or4(double chance2)
     {
         return (Math.random() > 1 - chance2) ? 2 : 4;

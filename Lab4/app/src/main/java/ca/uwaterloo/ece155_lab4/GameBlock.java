@@ -1,9 +1,11 @@
 package ca.uwaterloo.ece155_lab4;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.support.annotation.IntegerRes;
 import android.util.Log;
 import android.view.View;
+import android.widget.TextView;
 
 import ca.uwaterloo.ece155_lab2.R;
 import ca.uwaterloo.ece155_lab4.utils.Direction;
@@ -45,6 +47,9 @@ public class GameBlock extends android.support.v7.widget.AppCompatImageView
     private int xLoc;
     private int yLoc;
     private int value;
+    private TextView gameBlockValue;
+    private int xOffset;
+    private int yOffset = 30;
 
     public boolean isMoving = false;
 
@@ -60,11 +65,21 @@ public class GameBlock extends android.support.v7.widget.AppCompatImageView
         yLoc = y;
         value = v;
 
+        // assign the proper colored block and x-offset for the block based on value
+        setResourceByValue();
+
+        // create a new TextView to output the value of the block
+        gameBlockValue = new TextView(context);
+        gameBlockValue.setText("" + v);
+        gameBlockValue.setTextColor(Color.BLACK);
+        gameBlockValue.setTextSize(80);
+        gameBlockValue.setX(150 * y * 1.5f + xOffset);
+        gameBlockValue.setY(150 * x * 1.5f + yOffset);
+
         blockState = state.STOPPED;
         velocity = baseVelocity;
 
         // set the image recourse, size, scale, location, visibility
-        setResourceByValue();
         this.setScaleX(IMAGE_SCALE);
         this.setScaleY(IMAGE_SCALE);
         this.setTranslationX(myCoordX);
@@ -72,27 +87,31 @@ public class GameBlock extends android.support.v7.widget.AppCompatImageView
         this.setVisibility(VISIBLE);
 
         MainActivity.relativeLayout.addView(this);
+        gameBlockValue.bringToFront();
+        MainActivity.relativeLayout.addView(gameBlockValue);
     }
 
     public void setResourceByValue()
     {
         switch (value)
         {
-            case 2: this.setImageResource(R.drawable.block_2); break;
-            case 4: this.setImageResource(R.drawable.block_4); break;
-            case 8: this.setImageResource(R.drawable.block_8); break;
-            case 16: this.setImageResource(R.drawable.block_16); break;
-            case 32: this.setImageResource(R.drawable.block_32); break;
-            case 64: this.setImageResource(R.drawable.block_64); break;
-            case 128: this.setImageResource(R.drawable.block_128); break;
-            case 256: this.setImageResource(R.drawable.block_256); break;
-            default: this.setImageResource(R.drawable.block_2); break;
+            case 2: this.setImageResource(R.drawable.block_2); xOffset = 145; break;
+            case 4: this.setImageResource(R.drawable.block_4); xOffset = 145; break;
+            case 8: this.setImageResource(R.drawable.block_8); xOffset = 145; break;
+            case 16: this.setImageResource(R.drawable.block_16); xOffset = 115; break;
+            case 32: this.setImageResource(R.drawable.block_32); xOffset = 115; break;
+            case 64: this.setImageResource(R.drawable.block_64); xOffset = 115; break;
+            case 128: this.setImageResource(R.drawable.block_128); xOffset = 85; break;
+            case 256: this.setImageResource(R.drawable.block_256); xOffset = 85; break;
+            default: this.setImageResource(R.drawable.block_2); xOffset = 145; break;
         }
     }
 
     public void removeFromRL()
     {
         this.setVisibility(View.INVISIBLE);
+        gameBlockValue.setVisibility((View.INVISIBLE));
+        MainActivity.relativeLayout.removeView(gameBlockValue);
         MainActivity.relativeLayout.removeView(this);
     }
 
@@ -130,7 +149,7 @@ public class GameBlock extends android.support.v7.widget.AppCompatImageView
     // logic for motion of game block, as well as animation
     // block is to move either left, right, up or down (if possible)
     // legal xLoc and yLoc are 0, 1, 2 or 3 (4x4 matrix)
-    public synchronized boolean move(Direction dir, int x, int y)
+    public synchronized void move(Direction dir, int x, int y)
     {
         isMoving = true;
 
@@ -146,7 +165,7 @@ public class GameBlock extends android.support.v7.widget.AppCompatImageView
                     if (blockState == state.STOPPED) blockState = state.STARTED;
                     if (blockState == state.STARTED)
                     {
-                        targetCoordX = myCoordX + translationDistance;
+                        targetCoordX = myCoordX + (x-xLoc)*translationDistance;
                     }
 
                     if (myCoordX + velocity < targetCoordX)
@@ -159,10 +178,11 @@ public class GameBlock extends android.support.v7.widget.AppCompatImageView
                     }
                     velocity += acceleration;
                     this.setTranslationX(myCoordX);
+                    this.gameBlockValue.setX(myCoordX + xOffset);
                     if (myCoordX >= targetCoordX)
                     {
                         blockState = state.STOPPED;
-                        xLoc++;
+                        xLoc = x;
                     }
                 }
                 break;
@@ -175,7 +195,7 @@ public class GameBlock extends android.support.v7.widget.AppCompatImageView
                     if (blockState == state.STOPPED) blockState = state.STARTED;
                     if (blockState == state.STARTED)
                     {
-                        targetCoordX = myCoordX - translationDistance;
+                        targetCoordX = myCoordX - (x-xLoc)*translationDistance;
                     }
 
                     if (myCoordX - velocity > targetCoordX)
@@ -188,10 +208,11 @@ public class GameBlock extends android.support.v7.widget.AppCompatImageView
                     }
                     velocity += acceleration;
                     this.setTranslationX(myCoordX);
+                    this.gameBlockValue.setX(myCoordX + xOffset);
                     if (myCoordX <= targetCoordX)
                     {
                         blockState = state.STOPPED;
-                        xLoc--;
+                        xLoc = x;
                     }
                 }
                 break;
@@ -204,7 +225,7 @@ public class GameBlock extends android.support.v7.widget.AppCompatImageView
                     if (blockState == state.STOPPED) blockState = state.STARTED;
                     if (blockState == state.STARTED)
                     {
-                        targetCoordY = myCoordY - translationDistance;
+                        targetCoordY = myCoordY - (y-yLoc)*translationDistance;
                     }
 
                     if (myCoordY - velocity > targetCoordY)
@@ -217,10 +238,11 @@ public class GameBlock extends android.support.v7.widget.AppCompatImageView
                     }
                     velocity += acceleration;
                     this.setTranslationY(myCoordY);
+                    this.gameBlockValue.setY(myCoordY + yOffset);
                     if (myCoordY <= targetCoordY)
                     {
                         blockState = state.STOPPED;
-                        yLoc--;
+                        yLoc = y;
                     }
                 }
                 break;
@@ -233,7 +255,7 @@ public class GameBlock extends android.support.v7.widget.AppCompatImageView
                     if (blockState == state.STOPPED) blockState = state.STARTED;
                     if (blockState == state.STARTED)
                     {
-                        targetCoordY = myCoordY + translationDistance;
+                        targetCoordY = myCoordY + (y-yLoc)*translationDistance;
                     }
 
                     if (myCoordY + velocity < targetCoordY)
@@ -246,10 +268,11 @@ public class GameBlock extends android.support.v7.widget.AppCompatImageView
                     }
                     velocity += acceleration;
                     this.setTranslationY(myCoordY);
+                    this.gameBlockValue.setY(myCoordY + yOffset);
                     if (myCoordY >= targetCoordY)
                     {
                         blockState = state.STOPPED;
-                        yLoc++;
+                        yLoc = y;
                     }
                 }
                 break;
@@ -275,12 +298,10 @@ public class GameBlock extends android.support.v7.widget.AppCompatImageView
             targetCoordX = 0;
             targetCoordY = 0;
             isMoving = false;
-            return false; // doMove in gamelooptask is then false, so stops moving
         }
         else
         {
             isMoving = true;
-            return true; // doMove in gamelooptask is then true so continues moving
         }
     }
 }
