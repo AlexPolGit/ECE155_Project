@@ -35,7 +35,7 @@ public class GameManager
     }
 
     // initialize the board OnStartup
-    private void setUpEverything()
+    private synchronized void setUpEverything()
     {
         Log.d("debug1", "Setting up game.");
         for (int i = 0; i < 4; i++)
@@ -48,12 +48,12 @@ public class GameManager
         }
         // create 2 initial blocks on the grid
         newRandomBlock(2);
-        setGridString();
+        //setGridString();
         MainActivity.testGrid.setText(gridString);
     }
 
     // handles block merging when blocks slide in a direction
-    private boolean slide(int group, Direction dir)
+    private synchronized boolean slide(int group, Direction dir)
     {
         boolean hasSlid = false;
         switch (dir)
@@ -166,12 +166,12 @@ public class GameManager
     // slides the grid, row by row or column by column, depending on input direction
     public synchronized void slideGrid(Direction dir)
     {
-        boolean b = false;
+        boolean spawnBlock = false;
         motionIsDone = false;
         MainActivity.testGrid.setTextColor(Color.RED);
         for (int i = 0; i < 4; i++)
         {
-            b = slide(i, dir);
+            spawnBlock = slide(i, dir);
         }
 
         wipeList();
@@ -190,21 +190,21 @@ public class GameManager
         MainActivity.testGrid.setTextColor(Color.BLACK);
 
         takenScan();
-        if (!boardIsFull && b)
+        if (!boardIsFull)
         {
             newRandomBlock(1);
         }
-        setGridString();
+        //setGridString();
 
         MainActivity.testGrid.setText(gridString);
 
-        if (loseCondition())
+        if (loseCondition() || winCondition())
         {
             gg = true;
         }
-        else if (winCondition())
+        else
         {
-            gg = true;
+            gg = false;
         }
     }
 
@@ -235,7 +235,7 @@ public class GameManager
     }
 
     // Updates the board to check which cells are occupied by blocks
-    private void takenScan()
+    private synchronized void takenScan()
     {
         int c = 0;
         for (int i = 0; i < 4; i++)
@@ -339,7 +339,7 @@ public class GameManager
     }
 
     // clears the list of blocks
-    public void wipeList()
+    public synchronized void wipeList()
     {
         for (GameBlock g : blocks)
         {
@@ -349,7 +349,7 @@ public class GameManager
     }
 
     // add a new block to the list of blocks
-    private void addGameBlock(int x, int y, int val)
+    private synchronized void addGameBlock(int x, int y, int val)
     {
         blocks.add(new GameBlock(context, x, y, val));
         Log.d("debug1", String.format("Gameblock added at (%d, %d)!", x, y));
