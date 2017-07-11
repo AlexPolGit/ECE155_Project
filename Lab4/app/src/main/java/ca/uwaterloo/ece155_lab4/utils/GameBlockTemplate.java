@@ -46,7 +46,10 @@ public abstract class GameBlockTemplate extends android.support.v7.widget.AppCom
     public int xOffset;
     public int yOffset = 25;
 
-
+    // animation properties
+    public int numOfCellsToMove;
+    public int mergeValue;
+    public boolean deleteThis;
 
     public boolean isMoving = false;
 

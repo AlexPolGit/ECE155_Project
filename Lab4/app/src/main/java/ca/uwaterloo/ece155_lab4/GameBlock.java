@@ -22,6 +22,10 @@ public class GameBlock extends GameBlockTemplate
         yLoc = y;
         this.setValue(v);
 
+        numOfCellsToMove = 0;
+        mergeValue = 0;
+        deleteThis = false;
+
         // assign the proper colored block and x-offset for the block based on value
         setResourceByValue();
 

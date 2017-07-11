@@ -72,13 +72,19 @@ public class GameManager
                             grid[group][i] = 0;
                             hasSlid = true;
 
-                            // SLIDE BLOCK AT i TO i+1, DOUBLE ITS VALUE
+                            gameBoard[group][i+1].mergeValue = gameBoard[group][i+1].getValue()*2;
+                            gameBoard[group][i].numOfCellsToMove++;
+                            gameBoard[group][i].deleteThis = true;
                         }
                         else if (grid[group][i+1] == 0)
                         {
                             grid[group][i+1] = grid[group][i];
                             grid[group][i] = 0;
                             hasSlid = true;
+
+                            gameBoard[group][i+1] = gameBoard[group][i];
+                            gameBoard[group][i].numOfCellsToMove++;
+                            gameBoard[group][i] = null;
                         }
                     }
                 }
@@ -189,6 +195,11 @@ public class GameManager
         }
 
         motionIsDone = true;
+
+        // TODO: INSERT ANIMATION/MOVE STUFF AFTER LOGIC PROCESSED
+
+        // also reset the number of blocks to move by and merge value
+
         MainActivity.testGrid.setTextColor(Color.BLACK);
 
         takenScan();
