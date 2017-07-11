@@ -20,7 +20,7 @@ public class GameBlock extends GameBlockTemplate
         myCoordY = -220 + 150 * x * 1.5f;
         xLoc = x;
         yLoc = y;
-        value = v;
+        this.setValue(v);
 
         // assign the proper colored block and x-offset for the block based on value
         setResourceByValue();
@@ -51,7 +51,7 @@ public class GameBlock extends GameBlockTemplate
     // sets the image of game block depending on its value
     public void setResourceByValue()
     {
-        switch (value)
+        switch (this.getValue())
         {
             case 2: this.setImageResource(R.drawable.block_2); xOffset = 110; break;
             case 4: this.setImageResource(R.drawable.block_4); xOffset = 110; break;

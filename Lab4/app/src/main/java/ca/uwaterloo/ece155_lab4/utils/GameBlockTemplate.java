@@ -41,10 +41,12 @@ public abstract class GameBlockTemplate extends android.support.v7.widget.AppCom
     public float myCoordY;
     public int xLoc;
     public int yLoc;
-    public int value;
+    private int value;
     public TextView gameBlockValue;
     public int xOffset;
     public int yOffset = 25;
+
+
 
     public boolean isMoving = false;
 
