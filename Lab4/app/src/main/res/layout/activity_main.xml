@@ -19,7 +19,7 @@
         android:layout_alignParentTop="true"
         android:adjustViewBounds="true"
         app:srcCompat="@drawable/board"/>
-
+<!--
     <TextView
         android:id="@+id/gridTest"
         android:layout_width="wrap_content"
@@ -30,25 +30,37 @@
         android:textStyle="bold"
         tools:text="0 0 0 0\n0 0 0 0\n0 0 0 0\n0 0 0 0"
         android:layout_below="@+id/gameBoard"
-        android:layout_alignParentStart="true"/>
-
+        android:layout_alignParentStart="true"
+        android:visibility="invisible"/>
+-->
     <Button
         android:id="@+id/btnReset"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/gridTest"
-        android:layout_marginStart="78dp"
-        android:layout_marginTop="22dp"
-        android:layout_toEndOf="@+id/gridTest"
+        android:layout_marginTop="12dp"
         android:text="@string/reset_game"
-        tools:text="RESET"/>
+        tools:text="RESET"
+        android:layout_below="@+id/gameBoard"
+        android:layout_centerHorizontal="true"/>
 
     <TextView
         android:id="@+id/txtDir"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/gridTest"
-        />
+        android:layout_below="@+id/btnReset"
+        android:layout_centerHorizontal="true"
+        android:text="NO DIR"
+        android:textColor="@color/black"
+        android:textSize="36sp"/>
+
+    <TextView
+        android:id="@+id/txtTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/txtDir"
+        android:layout_centerHorizontal="true"
+        android:text="0 s"
+        android:textColor="@color/black"
+        android:textSize="36sp"/>
 
 </RelativeLayout>

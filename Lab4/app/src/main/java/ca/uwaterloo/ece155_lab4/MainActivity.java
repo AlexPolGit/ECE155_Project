@@ -25,6 +25,7 @@ public class MainActivity extends AppCompatActivity
 
     public static TextView text_direction;
     public static ImageView img_gameboard;
+    public static TextView text_time;
 
     // density of screen
     float scale;
@@ -61,15 +62,20 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         Log.d(debugFilter1, "APP CREATED.");
 
-        testGrid = (TextView) findViewById(R.id.gridTest);
+        testGrid = new TextView(getApplicationContext());
         btnReset = (Button) findViewById(R.id.btnReset);
         text_direction = (TextView) findViewById(R.id.txtDir);
+        text_time = (TextView) findViewById(R.id.txtTime);
 
         //testGrid.setText(gm.getStringOfBoardValues());
 
         // setup the board
         relativeLayout = (RelativeLayout) findViewById(R.id.relativeLayout);
         img_gameboard = (ImageView) findViewById(R.id.gameBoard);
+
+        Timer gameLoop = new Timer();
+        myGameLoop = new GameLoopTask(this, getApplicationContext(), relativeLayout);
+        gameLoop.schedule(myGameLoop, 50, 50);
 
         setUp();
 
@@ -89,10 +95,6 @@ public class MainActivity extends AppCompatActivity
     {
         // origin of gameboard
         img_gameboard.getLocationOnScreen(gameBoardOrigin);
-
-        Timer gameLoop = new Timer();
-        myGameLoop = new GameLoopTask(this, getApplicationContext(), relativeLayout);
-        gameLoop.schedule(myGameLoop, 50, 50);
 
         // initialize the sensor listener and managers
         sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);

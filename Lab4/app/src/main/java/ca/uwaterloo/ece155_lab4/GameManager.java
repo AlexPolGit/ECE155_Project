@@ -1,35 +1,32 @@
 package ca.uwaterloo.ece155_lab4;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.util.Log;
 
 import java.util.ArrayList;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import ca.uwaterloo.ece155_lab4.utils.Direction;
 
 public class GameManager
 {
+    // application context
     private Context context;
 
+    // logic for storing the values of blocks in order to move them
     private String gridString, takenString;
     private int grid[][] = new int[4][4];
     private boolean boardIsFull = false;
-
-    private int numberOfMoves = 0;
-    private float timeElapsed = 0;
-    private int difficulty = 4;
-
     private boolean taken[][] = new boolean[4][4];
 
-    private ArrayList<GameBlock> blocks;
+    // all the current blocks
+    public ArrayList<GameBlock> blocks;
 
-    private boolean ret = false;
-
+    // tells the rest of the program if motion is done yet
     public boolean motionIsDone = true;
     public boolean gg = false;
 
+    // contructor for game manager
     public GameManager(Context c)
     {
         context = c;
@@ -56,7 +53,7 @@ public class GameManager
     }
 
     // handles block merging when blocks slide in a direction
-    private void slide(int group, Direction dir)
+    private boolean slide(int group, Direction dir)
     {
         boolean hasSlid = false;
         switch (dir)
@@ -72,6 +69,8 @@ public class GameManager
                             grid[group][i+1] *= 2;
                             grid[group][i] = 0;
                             hasSlid = true;
+
+                            // SLIDE BLOCK AT i TO i+1, DOUBLE ITS VALUE
                         }
                         else if (grid[group][i+1] == 0)
                         {
@@ -94,6 +93,8 @@ public class GameManager
                             grid[group][i-1] *= 2;
                             grid[group][i] = 0;
                             hasSlid = true;
+
+                            // SLIDE BLOCK AT i TO i-1, DOUBLE ITS VALUE
                         }
                         else if (grid[group][i-1] == 0)
                         {
@@ -116,6 +117,8 @@ public class GameManager
                             grid[i + 1][group] *= 2;
                             grid[i][group] = 0;
                             hasSlid = true;
+
+                            // SLIDE BLOCK AT i TO i+1, DOUBLE ITS VALUE
                         }
                         else if (grid[i + 1][group] == 0)
                         {
@@ -138,6 +141,8 @@ public class GameManager
                             grid[i - 1][group] *= 2;
                             grid[i][group] = 0;
                             hasSlid = true;
+
+                            // SLIDE BLOCK AT i TO i-1, DOUBLE ITS VALUE
                         }
                         else if (grid[i - 1][group] == 0)
                         {
@@ -155,23 +160,37 @@ public class GameManager
                 break;
             }
         }
-        if (hasSlid)
-        {
-            numberOfMoves++;
-        }
+        return hasSlid;
     }
 
+    // slides the grid, row by row or column by column, depending on input direction
     public synchronized void slideGrid(Direction dir)
     {
+        boolean b = false;
         motionIsDone = false;
+        MainActivity.testGrid.setTextColor(Color.RED);
         for (int i = 0; i < 4; i++)
         {
-            slide(i, dir);
+            b = slide(i, dir);
         }
+
+        wipeList();
+        for (int x = 0; x < 4; x++)
+        {
+            for (int y = 0; y < 4; y++)
+            {
+                if (grid[x][y] != 0)
+                {
+                    blocks.add(new GameBlock(context, x, y, grid[x][y]));
+                }
+            }
+        }
+
         motionIsDone = true;
+        MainActivity.testGrid.setTextColor(Color.BLACK);
 
         takenScan();
-        if (!boardIsFull)
+        if (!boardIsFull && b)
         {
             newRandomBlock(1);
         }
@@ -271,7 +290,7 @@ public class GameManager
     }
 
     // check if the user has won, i.e. got a block with value 256
-    private boolean winCondition()
+    public boolean winCondition()
     {
         for (int i = 0; i < 4; i++)
         {
@@ -293,6 +312,7 @@ public class GameManager
         return (Math.random() > 1 - chance2) ? 2 : 4;
     }
 
+    // FOR DEBUGGING: creates strings for debugging board values
     private void setGridString()
     {
         gridString = "";
@@ -318,22 +338,17 @@ public class GameManager
         }
     }
 
-    public void tickTime(float t)
-    {
-        timeElapsed += t;
-    }
-
-    public double getUserScore()
-    {
-        double s = 10000 - difficulty * numberOfMoves * Math.log10(difficulty * timeElapsed);
-        return (s >= 0) ? s : 0;
-    }
-
+    // clears the list of blocks
     public void wipeList()
     {
+        for (GameBlock g : blocks)
+        {
+            g.removeFromRL();
+        }
         blocks = new ArrayList<>();
     }
 
+    // add a new block to the list of blocks
     private void addGameBlock(int x, int y, int val)
     {
         blocks.add(new GameBlock(context, x, y, val));
@@ -341,11 +356,12 @@ public class GameManager
         String s = "List of Blocks: ";
         for (GameBlock g : blocks)
         {
-            s += String.format("(%d, %d), ", g.getGridX(), g.getGridY());
+            s += String.format("(%d, %d, V:%d), ", g.getGridX(), g.getGridY() ,g.getValue());
         }
         Log.d("debug1", s);
     }
 
+    /*
     private void removeGameBlock(int x, int y)
     {
         for (GameBlock g : blocks)
@@ -372,4 +388,5 @@ public class GameManager
         Log.d("debug1", "Gameblock not found!");
         return null;
     }
+    */
 }

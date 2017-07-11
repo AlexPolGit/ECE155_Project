@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">ECE 155 Project</string>
+    <string name="app_name">Lab 4: 2048</string>
     <string name="DEFAULT_STRING">DEFAULT STRING</string>
 
     <!-- Store the text for the line graph title  -->
@@ -51,4 +51,7 @@
     <string name="block_value_2048">2048</string>
 
     <string name="reset_game">Reset Game</string>
+    <string name="game_won">YOU WIN!</string>
+    <string name="game_lost">YOU LOSE!</string>
+    <string name="score">SCORE: </string>
 </resources>

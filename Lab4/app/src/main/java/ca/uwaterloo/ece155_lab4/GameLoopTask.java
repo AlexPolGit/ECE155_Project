@@ -2,12 +2,14 @@ package ca.uwaterloo.ece155_lab4;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Color;
 import android.util.Log;
 import android.widget.RelativeLayout;
 
 import java.util.Timer;
 import java.util.TimerTask;
 
+import ca.uwaterloo.ece155_lab2.R;
 import ca.uwaterloo.ece155_lab4.utils.Direction;
 
 public class GameLoopTask extends TimerTask
@@ -46,22 +48,21 @@ public class GameLoopTask extends TimerTask
         myContext = c;
         myRL = r;
         gameManager = new GameManager(myContext);
-
-        Timer gameTime = new Timer();
-        TimerTask countTime = new TimerTask()
-        {
-            @Override
-            public void run()
-            {
-                gameManager.tickTime(1.0f);
-            }
-        };
-        gameTime.schedule(countTime, 1000, 1000);
     }
 
     public void resetGame()
     {
         gameManager.wipeList();
+        gameManager = new GameManager(myContext);
+        for (GameBlock g: gameManager.blocks)
+        {
+            g.getTextView().setTextColor(Color.BLACK);
+        }
+        lastGameDirection = Direction.NO_MOVEMENT;
+        MainActivity.text_direction.setText("NO DIR");
+        MainActivity.text_direction.setTextColor(Color.BLACK);
+        upTime = 0;
+        MainActivity.text_time.setText(String.format("0 s"));
     }
 
     // called when the block is allowed to move
@@ -73,6 +74,30 @@ public class GameLoopTask extends TimerTask
         if (!gameManager.gg && gameManager.motionIsDone)
         {
             gameManager.slideGrid(lastGameDirection);
+        }
+        else if (gameManager.gg)
+        {
+            if (gameManager.winCondition())
+            {
+                MainActivity.text_direction.setText(R.string.game_won);
+                MainActivity.text_direction.setTextColor(myContext.getResources().getColor(R.color.winGreen));
+
+                for (GameBlock g: gameManager.blocks)
+                {
+                    g.getTextView().setTextColor(Color.GREEN);
+                }
+            }
+            else
+            {
+                MainActivity.text_direction.setText(R.string.game_lost);
+                MainActivity.text_direction.setTextColor(myContext.getResources().getColor(R.color.loseRed));
+
+                for (GameBlock g: gameManager.blocks)
+                {
+                    g.getTextView().setTextColor(Color.RED);
+                }
+            }
+
         }
     }
 
@@ -91,18 +116,11 @@ public class GameLoopTask extends TimerTask
                     public void run()
                     {
                         upTime += 50;
-                        if (!gameManager.gg && gameManager.motionIsDone)
-                        {
-                            gameManager.slideGrid(lastGameDirection);
-                        }
-                        /*
+
                         if (upTime % 1000 == 0)
                         {
-                            Log.d("debug1", String.format("Program uptime: %d seconds", (upTime / 1000)));
-                            Log.d("debug1", "DIR:" + gameDirection.toString());
-                            gameManager.tickTime(1.0f);
+                            MainActivity.text_time.setText(String.format("%d s", upTime / 1000));
                         }
-                        */
                     }
                 }
         );
